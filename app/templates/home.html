@@ -1,9 +1,127 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-    <h1>Bem-vindo a {{ nome_empresa }}!</h1>
-    <hr>
-</div>
+
+<section class="hero">
+    <div class="container hero-content">
+        <h1>Bem-vindo a {{ nome_empresa }}!</h1>
+        <h2>O Futuro na Sua Mão!</h2>
+        <p>Descubra as últimas inovações em hardware e dispositivos inteligentes com ofertas exclusivas.</p>
+        <a href="#produtos" class="cta-button">Explorar Ofertas</a><br>
+        <a href="#faq" class="cta-button">FAQ</a>
+    </div>
+</section>
+
+<section id="produtos" class="container">
+    <h2 class="section-title">Produtos em Destaque</h2>
+    <div class="row">
+
+        <div class="card col-12 col-md-6 col-lg-4"><br>
+            <img src="#.jpg" class="card-img-top mx-auto d-block" alt="Smartphone">
+            <div class="card-body">
+                <h5 class="card-title"> Smartphone Samsung A07 128GB Preto 4GB RAM Tela 6,7" Câm. Dupla + Selfie 8MP
+                    Armazenamento interno 128GB </h5>
+                <p class="card-text">R$700,00</p>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCompra">
+                    Adicionar ao Carrinho
+                </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCompra">
+                    Comprar
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section id="faq">
+    <h2>Perguntas Frequentes (FAQ)</h2><br>
+    <div class="accordion" id="accordionFAQ">
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Como funciona o envio e qual o prazo de entrega?
+                </button>
+            </h3>
+
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Entregamos para todo o Brasil com uma logística rápida e eficiente! O prazo e o valor do frete
+                    variam de acordo com o seu CEP e podem ser simulados diretamente no carrinho de compras antes de
+                    finalizar o pedido.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Os produtos possuem garantia?
+                </button>
+            </h3>
+
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Sim! Todos os produtos comercializados na <strong>TechStore</strong> possuem garantia oficial do
+                    fabricante. Além disso, oferecemos a nossa Garantia Estendida exclusiva, reforçando a total
+                    confiança na procedência do nosso estoque.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Preciso de ajuda com um produto. Como aciono o Suporte Técnico?
+                </button>
+            </h3>
+
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Nosso grande diferencial é ter uma equipe técnica que entende de hardware de verdade. Você pode
+                    acionar nosso suporte técnico pelo chat online na sua área de cliente ou pelo telefone <strong>(21)
+                        91234-5678</strong>, de segunda a sexta, das 9h às 18h.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Quais são as formas de pagamento aceitas?
+                </button>
+            </h3>
+
+            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Aceitamos pagamentos via <strong>Pix (com 5% de desconto)</strong>, cartões de crédito em até 12x
+                    sem juros (dependendo do valor) e boleto bancário à vista.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    Posso devolver ou trocar um produto?
+                </button>
+            </h3>
+
+            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Claro! Respeitamos o Código de Defesa do Consumidor. Você tem até <strong>7 dias corridos</strong>
+                    após o recebimento do produto para solicitar a devolução por arrependimento, desde que o item esteja
+                    na embalagem original e sem sinais de uso.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
 
 {% endblock %}
