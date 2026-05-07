@@ -5,6 +5,7 @@ from .models import *
 
 def home_view(request):
     context = {
+        'nome_empresa': 'TechStore'
     }
 
     return render(request,'home.html', context)
