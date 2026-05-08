@@ -6,33 +6,36 @@
         <div class="card shadow">
 
             <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Login de Aluno | EduDjango</h4>
+                <h4 class="mb-0">Acesso ao Cliente | TechStore</h4>
             </div>
 
             <div class="card-body">
 
-                {% if message %}
-                <div class="alert alert-danger" role="alert">
-                    {{ message }}
-                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 {% endif %}
-                <form action="" method="POST">
+
+                <!-- AJUSTE: Adicionamos a URL correta no action -->
+                <form action="{% url 'login' %}" method="POST">
 
                     {% csrf_token %}
 
+                    <!-- Renderiza os campos de Usuário e Senha -->
                     {{ form.as_p }}
 
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Entrar na Plataforma</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Entrar na TechStore</button>
 
                 </form>
 
                 <br>
-
-                <p>Não possui conta?<a href="{% url 'cadastro' %}">Cadastre-se agora!</a></p>
+                <p class="text-center">Dificuldades no acesso? Entre em contato com o suporte.</p>
 
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

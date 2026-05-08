@@ -1,14 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" xmlns:mso="urn:schemas-microsoft-com:office:office"
-    xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechStore | Sua Loja de Tecnologia</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Ajustei a versão do Bootstrap para uma estável para evitar erros de CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
@@ -16,7 +15,7 @@
     <header id="navbar">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'home' %}"><img src="#.jpg" alt="">Tech<span>Store</span></a>
+                <a class="navbar-brand" href="{% url 'home' %}">Tech<span>Store</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -25,26 +24,22 @@
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item"><a class="nav-link" href="#">Produtos</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
-                        <!-- Adicionar a foto vazia -->
                         <li class="nav-item"><a class="nav-link" href="#">Atendimento</a></li>
                     </ul>
                     
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="#">Carrinho</a></li>
-                        <!-- Adicionar a foto de um carrinho -->
                         <li class="nav-item"><a class="nav-link" href="#">Favoritos</a></li>
-                        <!-- Adicionar a foto de um coração -->
                         <li class="nav-item">
                             {% if not user.is_authenticated %}
-                            <a class="nav-link" href="#">Login</a>
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
                             {% else %}
-                            <a class="nav-link" href="#">Logout</a>
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                             {% endif %}
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Buscar produtos..."
-                            aria-label="Search" />
+                        <input class="form-control me-2" type="search" placeholder="Buscar produtos..." aria-label="Search" />
                         <button class="btn btn-outline-success" type="submit">Buscar</button>
                     </form>
                 </div>
@@ -54,7 +49,7 @@
 
     <main>
         {% block content %}
-
+        <!-- Seu login.html entrará aqui automaticamente -->
         {% endblock %}
     </main>
 
@@ -64,12 +59,9 @@
             <h6 class="mb-0">(21) 91234-5678</h6>
             <h6>E-mail: TechStoreContato@gmail.com</h6>
             <a href="#navbar">Topo da página</a>
-          </div>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-        </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
