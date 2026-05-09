@@ -2,8 +2,9 @@
 
 from django.shortcuts import render, redirect 
 from django.contrib.auth import authenticate, login, logout 
-from django.contrib.auth.forms import AuthenticationForm 
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from .forms import CustomUserCreationForm
 from .models import *
 
 def home_view(request):
@@ -25,20 +26,31 @@ def login_view(request):
                 login(request, usuario)
                 return redirect('home') # Certifique-se que a rota da home se chama 'home' no urls.py
             else:
-                messages.error(request, "Usuário ou senha inválidos.")
+                messages.error(request, "Usuário ou senha inválidos.  Tente novamente!")
         else:
-            messages.error(request, "Informações inválidas.")
+            messages.error(request, "Informações inválidas. Tente novamente!")
     else:
         form = AuthenticationForm()
     
     return render(request, 'login.html', {'form': form})
    
 def cadastro_view(request):
-    context = {
-    }
-    
-    return render(request, 'cadastro.html', context)
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
 
+            return render(request, 'cadastro.html', {
+                'form': CustomUserCreationForm(),
+                'mostrar_bem_vindo': True,
+                'email_usuario': user.email,
+                'nome_usuario': user.username,
+            })
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'cadastro.html', {'form': form})
+    
 def logout_view(request):
     logout(request)
+
     return redirect('login')
