@@ -54,3 +54,5 @@ def logout_view(request):
     logout(request)
 
     return redirect('login')
+
+    # sincronização total 09/05
