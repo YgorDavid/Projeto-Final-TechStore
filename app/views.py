@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout 
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import CustomUserCreationForm
-# Importe os modelos que for usar na home conforme a lógica do Ygor
+from .forms import CadastroForm 
 from .models import Produto, Categoria 
 
 def home_view(request):
@@ -31,10 +30,11 @@ def cadastro_view(request):
     if request.method == 'POST':
         form = CadastroForm(request.POST)
         if form.is_valid():
-            # 1. Salva o usuário principal (Auth do Django)
+            # 1. Salva o usuário principal
             user = form.save()
+            # Retorna a página de sucesso usando o nome correto do formulário
             return render(request, 'cadastro.html', {
-                'form': CustomUserCreationForm(), 
+                'form': CadastroForm(), # CORRIGIDO AQUI
                 'mostrar_bem_vindo': True,
                 'nome_usuario': user.username,
                 'email_usuario': user.email,
@@ -48,4 +48,3 @@ def cadastro_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-    

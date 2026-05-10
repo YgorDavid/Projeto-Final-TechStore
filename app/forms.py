@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-class CustomUserCreationForm(UserCreationForm):
-    # Campos que o Django não tem no padrão, mas o seu projeto exige:
+# Mudamos o nome para CadastroForm para bater com o que está na sua views.py
+class CadastroForm(UserCreationForm):
     email = forms.EmailField(required=True, label="E-mail")
     
     tipo_pessoa = forms.ChoiceField(
@@ -25,9 +25,10 @@ class CustomUserCreationForm(UserCreationForm):
     )
 
     telefone = forms.CharField(
-    label="Celular / WhatsApp", 
-    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000'})
-)    
+        label="Celular / WhatsApp", 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000'})
+    )
+    
     endereco = forms.CharField(
         max_length=255, 
         label="Endereço Completo",
@@ -36,13 +37,12 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        # O UserCreationForm já cuida da senha, aqui pedimos o resto:
         fields = ("username", "email")
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
-        user.is_active = False  # Regra do Ygor: usuário começa inativo
+        user.is_active = False  # Regra de negócio: usuário começa inativo
         if commit:
             user.save()
         return user
