@@ -1,7 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# --- INFRAESTRUTURA DA LOJA ---
+# Esta classe estende o usuário padrão para salvar CPF/CNPJ e Endereço
+class Perfil(models.Model):
+    TIPO_PESSOA = [('PF', 'Pessoa Física'), ('PJ', 'Pessoa Jurídica')]
+    
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    tipo = models.CharField(max_length=2, choices=TIPO_PESSOA, default='PF')
+    cpf_cnpj = models.CharField(max_length=18, unique=True)
+    
+    # Campos para cálculo de frete e KPIs de localização
+    cep = models.CharField(max_length=9)
+    endereco = models.CharField(max_length=255)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2)
+
+    def __str__(self):
+        return f"{self.usuario.username} ({self.tipo})"
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -28,12 +43,12 @@ class Produto(models.Model):
     nome = models.CharField(max_length=200)
     descricao = models.TextField()
     
-    # Preço de venda e Custo (Adicionado para seus KPIs de lucro)
+    # Campos Financeiros
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    custo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) 
+    preco_custo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) # Adicionado aqui
     
     estoque = models.PositiveIntegerField(default=0)
-    imagem = models.ImageField(upload_to='produtos/')
+    imagem = models.ImageField(upload_to='produtos/') 
     especificacoes = models.TextField(help_text="Ex: RAM, CPU, Versão do Software")
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -76,7 +91,6 @@ class Avaliacao(models.Model):
     data_postagem = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Avaliação"
         verbose_name_plural = "Avaliações"
 
 class Pedido(models.Model):
@@ -91,14 +105,8 @@ class Pedido(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
-    def __str__(self):
-        return f"Pedido #{self.id} - {self.comprador.username}"
-
 class ItemPedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.quantidade}x {self.produto.nome}"
