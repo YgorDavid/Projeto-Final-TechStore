@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from .forms import CadastroForm, AvaliacaoForm
 from .models import *
 
@@ -43,9 +45,11 @@ def login_view(request):
             usuario = authenticate(username=username, password=password)
             
             if usuario is not None:
+                print(f"Usuário {username} autenticado com sucesso!")
                 login(request, usuario)
                 return redirect('home')
             else:
+                print(f"Falha na autenticação para o usuário: {username}")
                 messages.error(request, "Usuário ou senha inválidos.  Tente novamente!")
         else:
             messages.error(request, "Informações inválidas. Tente novamente!")
@@ -69,4 +73,7 @@ def cadastro_view(request):
 def logout_view(request):
     logout(request)
 
+    messages.info(request, "Você saiu com sucesso.")
+
     return redirect('login')
+
