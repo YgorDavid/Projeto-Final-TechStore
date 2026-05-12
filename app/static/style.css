@@ -53,6 +53,15 @@ body {
     color: var(--accent-blue);
 }
 
+@media (min-width: 992px) {
+    .search-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40%;
+    }
+}
+
 /* Hero Section */
 .hero {
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),

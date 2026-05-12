@@ -25,23 +25,31 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="collapse navbar-collapse position-relative" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item"><a class="nav-link" href="#">Produtos</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Atendimento</a></li>
                     </ul>
-                    
-                    <ul class="navbar-nav">
-                        {% if not user.is_authenticated %}
-                            <!-- AQUI ESTÃO OS LINKS DE ACESSO -->
-                            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+
+                    <form class="d-flex search-center" role="search" style="width: 40%;">
+                        <input class="form-control me-2" type="search" placeholder="Buscar produtos..."
+                            aria-label="Search" />
+                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                    </form>
+
+                    <div class="navbar-nav ms-auto">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link" href="#">Carrinho</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Favoritos</a></li>
                             <li class="nav-item">
-                                <a class="nav-link btn btn-primary text-white ms-lg-2 px-3" href="{% url 'cadastro' %}">Criar Conta</a>
+                                {% if not user.is_authenticated %}
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                {% else %}
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                {% endif %}
                             </li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Sair</a></li>
-                        {% endif %}
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -59,7 +67,7 @@
         {% endif %}
 
         {% block content %}
-        <!-- Conteúdo dinâmico aqui -->
+
         {% endblock %}
     </main>
 
@@ -73,4 +81,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
