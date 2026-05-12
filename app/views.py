@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib import messages
-from .forms import CadastroForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .forms import CadastroForm, AvaliacaoForm
 from .models import *
 
 def home_view(request):
