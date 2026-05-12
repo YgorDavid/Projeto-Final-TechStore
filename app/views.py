@@ -1,6 +1,4 @@
-# Create your views here.
-
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
@@ -8,11 +6,12 @@ from .forms import CustomUserCreationForm
 from .models import *
 
 def home_view(request):
+    produtos = Produto.objects.all()
     context = {
-        'nome_empresa': 'TechStore'
+        'nome_empresa': 'TechStore',
+        'produtos': produtos
     }
-
-    return render(request,'home.html', context)
+    return render(request, 'home.html', context)
 
 def login_view(request):
     if request.method == 'POST':
@@ -31,14 +30,26 @@ def login_view(request):
             messages.error(request, "Informações inválidas. Tente novamente!")
     else:
         form = AuthenticationForm()
-    
     return render(request, 'login.html', {'form': form})
-   
+
 def cadastro_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CadastroForm(request.POST)
         if form.is_valid():
+            # 1. Salva o usuário principal
             user = form.save()
+            # Retorna a página de sucesso usando o nome correto do formulário
+            return render(request, 'cadastro.html', {
+                'form': CadastroForm(), # CORRIGIDO AQUI
+                'mostrar_bem_vindo': True,
+                'nome_usuario': user.username,
+                'email_usuario': user.email,
+            })
+        else:
+            messages.error(request, "Erro no cadastro. Verifique os dados.")
+    else:
+        form = CadastroForm()
+    return render(request, 'cadastro.html', {'form': form})
 
             return render(request, 'cadastro.html', {
                 'form': CustomUserCreationForm(),

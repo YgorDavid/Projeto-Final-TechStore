@@ -1,33 +1,187 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow">
+<style>
+    /* DESIGN DE ALTO CONTRASTE E ELEGÂNCIA */
+    .card { border: 2px solid #0d6efd !important; }
+    .card-body { background-color: #ffffff !important; color: #000000 !important; }
 
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Cadastro</h4>
+    label, .form-label {
+        color: #212529 !important; 
+        font-weight: 700 !important; 
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-control, select {
+        border: 2px solid #adb5bd !important; 
+        color: #000000 !important; 
+        background-color: #f8f9fa !important; 
+        height: 45px;
+    }
+
+    h5.border-bottom {
+        color: #0d6efd !important;
+        border-bottom: 2px solid #0d6efd !important;
+        padding-top: 20px;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0 fw-bold">PORTAL DO CLIENTE</h4>
+                    <p class="mb-0 small">Sistema de Cadastro TechStore</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if not mostrar_bem_vindo %}
+                        <form method="POST" id="formCadastro" autocomplete="off">
+                            {% csrf_token %}
+                            
+                            <h5 class="fw-bold mb-3">1. Credenciais de Acesso</h5>
+                            <div class="row">
+                                <!-- Tradução Manual dos Campos de Identidade -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nome de Usuário</label>
+                                    {{ form.username }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">E-mail Corporativo/Pessoal</label>
+                                    {{ form.email }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Crie uma Senha</label>
+                                    {{ form.password }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Confirme sua Senha</label>
+                                    {{ form.password_confirmation }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Tipo de Cadastro</label>
+                                    {{ form.tipo_pessoa }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label" id="label_doc">CPF (11 números)</label>
+                                    {{ form.cpf_cnpj }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Celular / WhatsApp</label>
+                                    {{ form.telefone }}
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold mt-4 mb-3">2. Logística e Entrega</h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">CEP</label>
+                                    <input type="text" name="cep" id="id_cep" class="form-control" placeholder="00000-000">
+                                </div>
+                                <div class="col-md-7 mb-3">
+                                    <label class="form-label">Logradouro (Rua/Av)</label>
+                                    <input type="text" name="logradouro" id="id_logradouro" class="form-control">
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="form-label">Nº</label>
+                                    <input type="text" name="numero" id="id_numero" class="form-control">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Bairro</label>
+                                    <input type="text" name="bairro" id="id_bairro" class="form-control">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Cidade</label>
+                                    <input type="text" name="cidade" id="id_cidade" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Estado (UF)</label>
+                                    <input type="text" name="estado" id="id_estado" class="form-control" readonly>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 shadow fw-bold py-3">
+                                    CONFIRMAR CADASTRO PROFISSIONAL
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <h2 class="text-success fw-bold">🎉 Cadastro Concluído!</h2>
+                            <p class="lead">Bem-vindo à TechStore. Seu perfil está ativo.</p>
+                            <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-3 px-5 shadow">Acessar Portal</a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-
-            <div class="card-body">
-                <form action="" method="POST">
-
-                    {% csrf_token %}
-
-                    {{ form.as_p }}
-
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Criar conta</button>
-
-                </form>
+            <div class="card-footer bg-white border-0 text-center pb-4">
+                <p class="text-muted mb-0">Já é nosso cliente? <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">Faça login</a></p>
             </div>
         </div>
     </div>
 </div>
 
-{% if mostrar_bem_vindo %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+$(document).ready(function(){
+    // Máscara Elegante de CEP
+    $('#id_cep').mask('00000-000');
+    
+    // Máscara Dinâmica de Telefone
+    var behavior = function (val) {
+        return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+    },
+    optionsTel = {
+        onKeyPress: function (val, e, field, options) {
+            field.mask(behavior.apply({}, arguments), options);
+        }
+    };
+    $('#id_telefone').mask(behavior, optionsTel);
 
-{% endif %}
+    // MÁSCARAS ELEGANTES (CPF com pontos e traço | CNPJ com pontos, barra e traço)
+    function aplicarMascarasIdentificacao() {
+        var tipo = $('#id_tipo_pessoa').val();
+        var campoDoc = $('#id_cpf_cnpj');
+        var labelDoc = $('#label_doc');
 
+        campoDoc.val(''); // Limpa para evitar erros na troca
+        
+        if(tipo === 'PF' || tipo === '' || tipo === undefined) {
+            campoDoc.mask('000.000.000-00');
+            labelDoc.text('CPF (11 números sugeridos)');
+            campoDoc.attr('placeholder', '000.000.000-00');
+        } else {
+            campoDoc.mask('00.000.000/0000-00');
+            labelDoc.text('CNPJ (14 números com / e -)');
+            campoDoc.attr('placeholder', '00.000.000/0000-00');
+        }
+    }
+
+    $('#id_tipo_pessoa').change(aplicarMascarasIdentificacao);
+    aplicarMascarasIdentificacao(); // Inicia na carga da página
+
+    // ViaCEP Inteligente
+    $('#id_cep').blur(function(){
+        var cep = $(this).val().replace(/\D/g, '');
+        if(cep != ""){
+            $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/", function(dados) {
+                if (!("erro" in dados)) {
+                    $("#id_logradouro").val(dados.logradouro);
+                    $("#id_bairro").val(dados.bairro);
+                    $("#id_cidade").val(dados.localidade);
+                    $("#id_estado").val(dados.uf);
+                    $("#id_numero").focus();
+                }
+            });
+        }
+    });
+});
+</script>
 {% endblock %}

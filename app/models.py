@@ -1,9 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Esta classe estende o usuário padrão para salvar CPF/CNPJ e Endereço
+class Perfil(models.Model):
+    TIPO_PESSOA = [('PF', 'Pessoa Física'), ('PJ', 'Pessoa Jurídica')]
+    
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    tipo = models.CharField(max_length=2, choices=TIPO_PESSOA, default='PF')
+    cpf_cnpj = models.CharField(max_length=18, unique=True)
+    
+    # Campos para cálculo de frete e KPIs de localização
+    cep = models.CharField(max_length=9)
+    endereco = models.CharField(max_length=255)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2)
+
+    def __str__(self):
+        return f"{self.usuario.username} ({self.tipo})"
+
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True) # Importante para URLs amigáveis
+    slug = models.SlugField(unique=True)
 
     class Meta:
         verbose_name_plural = "Categorias"
@@ -12,7 +29,6 @@ class Categoria(models.Model):
         return self.nome
 
 class Loja(models.Model):
-    # Relaciona a Loja aos Usuários (equipe) para o Controle de Acesso
     equipe = models.ManyToManyField(User, related_name='lojas_que_gerencio', blank=True)
     nome_da_loja = models.CharField(max_length=150)
     descricao = models.TextField(blank=True)
@@ -22,18 +38,17 @@ class Loja(models.Model):
         return self.nome_da_loja
 
 class Produto(models.Model):
-    # Relacionamentos com Chave Estrangeira
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name='produtos')
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
-    
-    # Informações do Produto
     nome = models.CharField(max_length=200)
     descricao = models.TextField()
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
-    estoque = models.PositiveIntegerField(default=0)
-    imagem = models.ImageField(upload_to='produtos/') # Essencial para o visual na Aula 20
     
-    # Especificações Técnicas (Diferencial Tech)
+    # Campos Financeiros
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_custo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) # Adicionado aqui
+    
+    estoque = models.PositiveIntegerField(default=0)
+    imagem = models.ImageField(upload_to='produtos/') 
     especificacoes = models.TextField(help_text="Ex: RAM, CPU, Versão do Software")
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -41,43 +56,57 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
 
+# --- SISTEMA DE CADASTRO E PERFIL (O que focamos hoje) ---
+
+class Perfil(models.Model):
+    TIPO_PESSOA_CHOICES = [
+        ('PF', 'Pessoa Física'),
+        ('PJ', 'Pessoa Jurídica'),
+    ]
+
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    tipo_pessoa = models.CharField(max_length=2, choices=TIPO_PESSOA_CHOICES, default='PF')
+    documento = models.CharField(max_length=18, unique=True, verbose_name="CPF/CNPJ")
+    
+    # Frete e Localização
+    cep = models.CharField(max_length=9, verbose_name="CEP")
+    endereco = models.CharField(max_length=255, verbose_name="Rua", blank=True, null=True)
+    cidade = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
+    estado = models.CharField(max_length=2, verbose_name="Estado", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Perfil de Usuário"
+        verbose_name_plural = "Perfis de Usuários"
+
+    def __str__(self):
+        return f"{self.usuario.username} ({self.tipo_pessoa})"
+
+# --- TRANSAÇÕES E REVIEWS ---
+
 class Avaliacao(models.Model):
-    # Relacionamento para o Sistema de Reviews (Sugestão do projeto)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='avaliacoes')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    nota = models.IntegerField(choices=[(i, i) for i in range(1, 6)]) # Nota de 1 a 5[cite: 1]
+    nota = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     comentario = models.TextField()
     data_postagem = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Avaliação"
         verbose_name_plural = "Avaliações"
 
 class Pedido(models.Model):
-    # Opções de status para o Feedback e Lógica (Requisito B e C)
     STATUS_CHOICES = [
         ('pendente', 'Pendente'),
         ('pago', 'Pago'),
         ('enviado', 'Enviado'),
         ('cancelado', 'Cancelado'),
     ]
-
     comprador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pedidos')
     data_pedido = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
-    def __str__(self):
-        return f"Pedido #{self.id} - {self.comprador.username}"
-
 class ItemPedido(models.Model):
-    # Relaciona o Pedido aos Produtos (Chaves Estrangeiras)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
-    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2) # Preço no momento da compra
-
-    def __str__(self):
-        return f"{self.quantidade}x {self.produto.nome}"
-    
-# Faltou o custo
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
