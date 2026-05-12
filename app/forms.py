@@ -42,10 +42,21 @@ class CadastroForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
-        user.is_active = False  # Regra de negócio: usuário começa inativo
+        user.is_active = False 
+        
         if commit:
             user.save()
+            # Cria o perfil vinculado ao usuário recém-criado
+            Perfil.objects.create(
+                user=user,
+                tipo_pessoa=self.cleaned_data['tipo_pessoa'],
+                cpf_cnpj=self.cleaned_data['cpf_cnpj'],
+                cep=self.cleaned_data['cep'],
+                telefone=self.cleaned_data['telefone'],
+                endereco=self.cleaned_data['endereco']
+            )
         return user
+
   
 #  Pode ser usado para criar um formulário de cadastro de produtos no futuro.
 

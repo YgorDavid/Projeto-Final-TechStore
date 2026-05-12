@@ -1,19 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Esta classe estende o usuário padrão para salvar CPF/CNPJ e Endereço
 class Perfil(models.Model):
-    TIPO_PESSOA = [('PF', 'Pessoa Física'), ('PJ', 'Pessoa Jurídica')]
-    
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    tipo = models.CharField(max_length=2, choices=TIPO_PESSOA, default='PF')
-    cpf_cnpj = models.CharField(max_length=18, unique=True)
-    
-    # Campos para cálculo de frete e KPIs de localização
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    tipo_pessoa = models.CharField(max_length=2)
+    cpf_cnpj = models.CharField(max_length=18)
     cep = models.CharField(max_length=9)
+    telefone = models.CharField(max_length=20)
     endereco = models.CharField(max_length=255)
-    cidade = models.CharField(max_length=100)
-    estado = models.CharField(max_length=2)
 
     def __str__(self):
         return f"{self.usuario.username} ({self.tipo})"
