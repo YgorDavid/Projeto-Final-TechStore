@@ -12,11 +12,11 @@
             <div class="card-body">
 
                 {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+                {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
                 {% endif %}
 
                 <!-- AJUSTE: Adicionamos a URL correta no action -->

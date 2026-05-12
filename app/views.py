@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import CustomUserCreationForm
+from .forms import CadastroForm
 from .models import *
 
 def home_view(request):
@@ -47,19 +47,21 @@ def cadastro_view(request):
             })
         else:
             messages.error(request, "Erro no cadastro. Verifique os dados.")
+
     else:
         form = CadastroForm()
-    return render(request, 'cadastro.html', {'form': form})
+        return render(request, 'cadastro.html', {
+            'form': form,
+            'mostrar_bem_vindo': False,
+        })
 
-            return render(request, 'cadastro.html', {
-                'form': CustomUserCreationForm(),
-                'mostrar_bem_vindo': True,
-                'email_usuario': user.email,
-                'nome_usuario': user.username,
-            })
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'cadastro.html', {'form': form})
+
+        return render(request, 'cadastro.html', {
+            'form': CadastroForm(),
+            'mostrar_bem_vindo': True,
+            'email_usuario': user.email,
+            'nome_usuario': user.username,
+        })
     
 def logout_view(request):
     logout(request)
