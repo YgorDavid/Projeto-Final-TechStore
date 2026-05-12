@@ -2,7 +2,7 @@
 :root {
     --dark-bg: #0d1117;
     --accent-blue: #00d4ff;
-    --text-gray: #b1b1b1;
+    --text-gray: #f0f0f0;
     --card-bg: #161b22;
 }
 
@@ -22,8 +22,13 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    margin: 0;
 }
 
+main {
+    flex: 1; /* O conteúdo principal "empurra" o footer para baixo */
+  }
+  
 /* Navbar Personalizada */
 .navbar {
     background-color: var(--dark-bg);
@@ -252,7 +257,6 @@ body {
     color: var(--text-gray);
 }
 
-/* Footer */
 footer {
     background-color: #0a0d12;
     border-top: 1px solid #30363d;
@@ -271,7 +275,7 @@ footer a:hover {
     color: var(--accent-blue);
 }
 
-footer h6 {
+footer p {
     font-size: 0.85rem;
     color: var(--text-gray);
 }

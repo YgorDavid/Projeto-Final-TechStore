@@ -2,15 +2,25 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Perfil(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    tipo_pessoa = models.CharField(max_length=2)
-    cpf_cnpj = models.CharField(max_length=18)
-    cep = models.CharField(max_length=9)
-    telefone = models.CharField(max_length=20)
-    endereco = models.CharField(max_length=255)
+    TIPO_PESSOA_CHOICES = [
+        ('PF', 'Pessoa Física'),
+        ('PJ', 'Pessoa Jurídica'),
+    ]
+
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    tipo_pessoa = models.CharField(max_length=2, choices=TIPO_PESSOA_CHOICES, default='PF')
+    documento = models.CharField(max_length=18, unique=True, verbose_name="CPF/CNPJ")
+    cep = models.CharField(max_length=9, verbose_name="CEP")
+    endereco = models.CharField(max_length=255, verbose_name="Rua", blank=True, null=True)
+    cidade = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
+    estado = models.CharField(max_length=2, verbose_name="Estado", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Perfil de Usuário"
+        verbose_name_plural = "Perfis de Usuários"
 
     def __str__(self):
-        return f"{self.usuario.username} ({self.tipo})"
+        return f"{self.usuario.username} ({self.tipo_pessoa})"
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -50,42 +60,27 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
 
-# --- SISTEMA DE CADASTRO E PERFIL (O que focamos hoje) ---
-
-class Perfil(models.Model):
-    TIPO_PESSOA_CHOICES = [
-        ('PF', 'Pessoa Física'),
-        ('PJ', 'Pessoa Jurídica'),
+class Avaliacao(models.Model):
+    NOTAS_CHOICES = [
+        (1, '⭐ (1) Ruim'),
+        (2, '⭐⭐ (2) Regular'),
+        (3, '⭐⭐⭐ (3) Bom'),
+        (4, '⭐⭐⭐⭐ (4) Muito Bom'),
+        (5, '⭐⭐⭐⭐⭐ (5) Excelente'),
     ]
 
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    tipo_pessoa = models.CharField(max_length=2, choices=TIPO_PESSOA_CHOICES, default='PF')
-    documento = models.CharField(max_length=18, unique=True, verbose_name="CPF/CNPJ")
-    
-    # Frete e Localização
-    cep = models.CharField(max_length=9, verbose_name="CEP")
-    endereco = models.CharField(max_length=255, verbose_name="Rua", blank=True, null=True)
-    cidade = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
-    estado = models.CharField(max_length=2, verbose_name="Estado", blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Perfil de Usuário"
-        verbose_name_plural = "Perfis de Usuários"
-
-    def __str__(self):
-        return f"{self.usuario.username} ({self.tipo_pessoa})"
-
-# --- TRANSAÇÕES E REVIEWS ---
-
-class Avaliacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='avaliacoes')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    nota = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    nota = models.PositiveSmallIntegerField(choices=NOTAS_CHOICES)
     comentario = models.TextField()
     data_postagem = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Avaliações"
+        unique_together = ('usuario', 'produto') 
+
+    def __str__(self):
+        return f"Nota {self.nota} para {self.produto} por {self.usuario.username}"
 
 class Pedido(models.Model):
     STATUS_CHOICES = [
