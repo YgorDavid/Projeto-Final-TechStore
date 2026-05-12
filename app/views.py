@@ -13,6 +13,27 @@ def home_view(request):
     }
     return render(request, 'home.html', context)
 
+def produtos_view(request):
+    context = {
+        
+    }
+
+    return render(request,'produtos.html', context)
+
+@login_required
+def avaliar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    
+    if request.method == 'POST':
+        form = AvaliacaoForm(request.POST)
+        if form.is_valid():
+            avaliacao = form.save(commit=False)
+            avaliacao.usuario = request.user
+            avaliacao.produto = produto
+            avaliacao.save()
+            
+            return redirect('detalhe_produto', pk=produto.id)
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -23,7 +44,7 @@ def login_view(request):
             
             if usuario is not None:
                 login(request, usuario)
-                return redirect('home') # Certifique-se que a rota da home se chama 'home' no urls.py
+                return redirect('home')
             else:
                 messages.error(request, "Usuário ou senha inválidos.  Tente novamente!")
         else:
@@ -36,36 +57,16 @@ def cadastro_view(request):
     if request.method == 'POST':
         form = CadastroForm(request.POST)
         if form.is_valid():
-            # 1. Salva o usuário principal
             user = form.save()
-            # Retorna a página de sucesso usando o nome correto do formulário
-            return render(request, 'cadastro.html', {
-                'form': CadastroForm(), # CORRIGIDO AQUI
-                'mostrar_bem_vindo': True,
-                'nome_usuario': user.username,
-                'email_usuario': user.email,
-            })
+            return render(request, 'cadastro.html', {'mostrar_bem_vindo': True, 'nome_usuario': user.username})
         else:
-            messages.error(request, "Erro no cadastro. Verifique os dados.")
-
+            return render(request, 'cadastro.html', {'form': form, 'mostrar_bem_vindo': False})
     else:
         form = CadastroForm()
-        return render(request, 'cadastro.html', {
-            'form': form,
-            'mostrar_bem_vindo': False,
-        })
+    return render(request, 'cadastro.html', {'form': form})
 
-
-        return render(request, 'cadastro.html', {
-            'form': CadastroForm(),
-            'mostrar_bem_vindo': True,
-            'email_usuario': user.email,
-            'nome_usuario': user.username,
-        })
     
 def logout_view(request):
     logout(request)
 
     return redirect('login')
-
-    # sincronização total 09/05
