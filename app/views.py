@@ -42,9 +42,11 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            
+            messages.success(request, f"Seja bem-vindo, {user.username}! Login realizado com sucesso.")
+            
             return redirect('home')
         else:
-            print(form.errors) 
             messages.error(request, "Usuário ou senha inválidos.")
     else:
         form = AuthenticationForm()
@@ -55,9 +57,12 @@ def cadastro_view(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return render(request, 'cadastro.html', {'mostrar_bem_vindo': True, 'nome_usuario': user.username})
+            
+            messages.success(request, f"Conta criada com sucesso para {user.username}! Faça o seu login abaixo.")
+            
+            return redirect('login') 
         else:
-            return render(request, 'cadastro.html', {'form': form, 'mostrar_bem_vindo': False})
+            return render(request, 'cadastro.html', {'form': form})
     else:
         form = CadastroForm()
     return render(request, 'cadastro.html', {'form': form})

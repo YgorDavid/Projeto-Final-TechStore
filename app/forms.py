@@ -1,9 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import *
+from .models import Perfil, Avaliacao
 
-# Mudamos o nome para CadastroForm para bater com o que está na sua views.py
 class CadastroForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
     tipo_pessoa = forms.ChoiceField(
@@ -30,14 +29,11 @@ class CadastroForm(UserCreationForm):
         if commit:
             user.save()
             Perfil.objects.create(
-                user=user,
+                usuario=user,
                 tipo_pessoa=self.cleaned_data['tipo_pessoa'],
-                cpf_cnpj=self.cleaned_data['cpf_cnpj'],
-                telefone=self.cleaned_data['telefone'],
+                documento=self.cleaned_data['cpf_cnpj'],
                 cep=self.cleaned_data['cep'],
-                logradouro=self.cleaned_data['logradouro'],
-                numero=self.cleaned_data['numero'],
-                bairro=self.cleaned_data['bairro'],
+                endereco=self.cleaned_data['logradouro'],
                 cidade=self.cleaned_data['cidade'],
                 estado=self.cleaned_data['estado'],
             )

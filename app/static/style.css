@@ -261,21 +261,18 @@ footer {
     background-color: #0a0d12;
     border-top: 1px solid #30363d;
     margin-top: 100px;
-    color: var(--text-gray);
-    border-top: 1px solid #dee2e6;
-}
-
-footer a {
-    color: var(--accent-blue);
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-    color: var(--accent-blue);
 }
 
 footer p {
-    font-size: 0.85rem;
-    color: var(--text-gray);
+    font-size: 0.9rem;
+    color: #a8b3cf;
+}
+
+footer a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+footer a:hover {
+    color: #ffffff;
 }

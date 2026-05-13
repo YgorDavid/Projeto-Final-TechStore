@@ -10,15 +10,6 @@
             </div>
 
             <div class="card-body">
-
-                {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-danger" role="alert">
-                    {{ message }}
-                </div>
-                {% endfor %}
-                {% endif %}
-
                 <form action="{% url 'login' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -40,4 +31,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
