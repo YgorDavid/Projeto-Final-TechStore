@@ -25,7 +25,8 @@ class CadastroForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.is_active = False 
+        user.is_active = True 
+        
         if commit:
             user.save()
             Perfil.objects.create(

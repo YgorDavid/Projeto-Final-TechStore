@@ -19,16 +19,17 @@
                 {% endfor %}
                 {% endif %}
 
-                <!-- AJUSTE: Adicionamos a URL correta no action -->
                 <form action="{% url 'login' %}" method="POST">
-
                     {% csrf_token %}
-
-                    <!-- Renderiza os campos de Usuário e Senha -->
-                    {{ form.as_p }}
-
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Usuário</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">Senha</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    </div>
                     <button type="submit" class="btn btn-primary w-100 mt-3">Entrar na TechStore</button>
-
                 </form>
 
                 <br>
