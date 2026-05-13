@@ -8,13 +8,14 @@ class Perfil(models.Model):
     ]
 
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    foto = models.ImageField(upload_to='perfil_fotos/', null=True, blank=True)
     tipo_pessoa = models.CharField(max_length=2, choices=TIPO_PESSOA_CHOICES, default='PF')
     documento = models.CharField(max_length=18, unique=True, verbose_name="CPF/CNPJ")
     cep = models.CharField(max_length=9, verbose_name="CEP")
     endereco = models.CharField(max_length=255, verbose_name="Rua", blank=True, null=True)
     cidade = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
     estado = models.CharField(max_length=2, verbose_name="Estado", blank=True, null=True)
-
+    
     class Meta:
         verbose_name = "Perfil de Usuário"
         verbose_name_plural = "Perfis de Usuários"

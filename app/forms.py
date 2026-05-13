@@ -39,6 +39,41 @@ class CadastroForm(UserCreationForm):
             )
         return user
 
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control bg-light'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control bg-light'}),
+        }
+
+class PerfilUpdateForm(forms.ModelForm):
+    numero = forms.CharField(
+        max_length=20, 
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_numero'})
+    )
+
+    class Meta:
+        model = Perfil
+        fields = ['foto', 'cep', 'endereco', 'cidade', 'estado']
+        widgets = {
+            'foto': forms.FileInput(attrs={'class': 'form-control bg-light'}),
+            'cep': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_cep'}),
+            'endereco': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_logradouro'}),
+            'cidade': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_cidade', 'readonly': 'readonly'}),
+            'estado': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_estado', 'readonly': 'readonly'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.endereco:
+            if ' - Nº ' in self.instance.endereco:
+                partes = self.instance.endereco.split(' - Nº ')
+                self.initial['endereco'] = partes[0]
+                self.initial['numero'] = partes[1]
+
 class AvaliacaoForm(forms.ModelForm):
     class Meta:
         model = Avaliacao
