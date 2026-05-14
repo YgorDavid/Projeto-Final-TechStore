@@ -57,6 +57,22 @@ class Produto(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
+    # --- KPIs de Custo e Financeiros (Jorge) ---
+    def calcular_margem_abs(self):
+        """Retorna o lucro em Reais (Preço - Custo)"""
+        return self.preco - self.preco_custo
+
+    def calcular_margem_percentual(self):
+        """Retorna a margem em porcentagem"""
+        if self.preco > 0:
+            margem = (self.calcular_margem_abs() / self.preco) * 100
+            return round(margem, 2)
+        return 0
+
+    def valor_total_estoque(self):
+        """KPI Logístico: Quanto dinheiro tenho parado neste produto"""
+        return self.preco_custo * self.estoque
+
     def __str__(self):
         return self.nome
 
@@ -81,6 +97,8 @@ class Avaliacao(models.Model):
 
     def __str__(self):
         return f"Nota {self.nota} para {self.produto} por {self.usuario.username}"
+
+    
 
 class Pedido(models.Model):
     STATUS_CHOICES = [
