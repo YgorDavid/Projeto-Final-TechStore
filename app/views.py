@@ -35,8 +35,12 @@ def dashboard_view(request):
             perfil_instance = p_form.save(commit=False)
             
             num = p_form.cleaned_data.get('numero')
-            if num:
-                perfil_instance.endereco = f"{perfil_instance.endereco} - Nº {num}"
+            rua = p_form.cleaned_data.get('endereco')
+            
+            if num and rua:
+                perfil_instance.endereco = f"{rua} - Nº {num}"
+            elif rua:
+                perfil_instance.endereco = rua
                 
             perfil_instance.save()
             

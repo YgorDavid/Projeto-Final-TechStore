@@ -4,25 +4,24 @@
 <div class="container py-5">
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="row">
+        <div class="row justify-content-center">
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-6 mb-4">
                 <div class="card shadow-sm border-0 text-center p-4" style="background-color: #1a1f26; color: #ffffff;">
-
                     <div class="mb-3 position-relative d-inline-block mx-auto">
                         {% if perfil.foto %}
                         <img src="{{ perfil.foto.url }}" class="rounded-circle shadow object-fit-cover"
-                            style="width: 100px; height: 100px; border: 3px solid #0d6efd;">
+                            style="width: 100px; height: 100px; border: 3px solid var(--primary-color);">
                         {% else %}
-                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center shadow"
-                            style="width: 100px; height: 100px;">
-                            <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center shadow"
+                            style="width: 100px; height: 100px; background-color: var(--primary-color);">
+                            <i class="bi bi-person-fill text-dark" style="font-size: 3rem;"></i>
                         </div>
                         {% endif %}
 
-                        <label for="id_foto" class="btn btn-sm btn-light rounded-circle shadow position-absolute"
-                            style="bottom: 0; right: 0; transform: translate(10%, 10%); cursor: pointer; border: 2px solid #0d6efd; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-pencil-fill text-primary" style="font-size: 0.85rem;"></i>
+                        <label for="id_foto" class="rounded-circle shadow position-absolute"
+                            style="bottom: 0; right: 0; transform: translate(10%, 10%); cursor: pointer; border: 2px solid var(--primary-color); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background-color: #fff;">
+                            <i class="bi bi-pencil-fill" style="font-size: 0.85rem; color: var(--primary-color);"></i>
                         </label>
                     </div>
 
@@ -52,8 +51,17 @@
                             </div>
                         </div>
 
-                        <div class="mb-3" style="display: none !important;">
-                            <label class="form-label small text-secondary fw-bold">Alterar Foto de Perfil</label>
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary fw-bold">Alterar Telefone</label>
+                            <div class="input-group">
+                                {{ p_form.telefone }}
+                                <span class="input-group-text bg-light border-0 text-muted">
+                                    <i class="bi bi-pencil-fill" style="font-size: 0.8rem;"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 d-none">
                             {{ p_form.foto }}
                         </div>
                     </div>
@@ -69,38 +77,56 @@
                 </div>
             </div>
 
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0 mb-4"
-                    style="background-color: #ffffff; color: #000000; border: 2px solid #0d6efd !important;">
-                    <div class="card-header bg-primary text-white py-3">
-                        <h5 class="mb-0 fw-bold"><i class="bi bi-geo-alt-fill me-2"></i> MEUS DADOS DE ENTREGA</h5>
+            <div class="col-md-10">
+                <div class="card shadow-lg border-0 mb-4"
+                    style="background-color: #1a1f26; color: #ffffff; border: 1px solid var(--primary-color) !important; border-radius: 15px;">
+
+                    <div class="card-header py-3 border-0"
+                        style="background-color: var(--primary-color); border-radius: 15px 15px 0 0;">
+                        <h5 class="mb-0 fw-bold text-center" style="color: #000;">
+                            <i class="bi bi-geo-alt-fill me-2"></i> MEUS DADOS DE ENTREGA
+                        </h5>
                     </div>
-                    <div class="card-body p-4">
+
+                    <div class="card-body p-4 p-lg-5">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label class="form-label fw-bold small text-muted">CEP</label>
-                                {{ p_form.cep }}
+                                <label class="form-label fw-bold small text-secondary">CEP</label>
+                                <div class="dark-form-control">
+                                    {{ p_form.cep }}
+                                </div>
                             </div>
                             <div class="col-md-7 mb-3">
-                                <label class="form-label fw-bold small text-muted">Endereço (Rua/Av)</label>
-                                {{ p_form.endereco }}
+                                <label class="form-label fw-bold small text-secondary">Endereço (Rua/Av)</label>
+                                <div class="dark-form-control">
+                                    {{ p_form.endereco }}
+                                </div>
                             </div>
                             <div class="col-md-2 mb-3">
-                                <label class="form-label fw-bold small text-muted">Nº</label>
-                                {{ p_form.numero }}
+                                <label class="form-label fw-bold small text-secondary">Nº</label>
+                                <div class="dark-form-control">
+                                    {{ p_form.numero }}
+                                </div>
                             </div>
                             <div class="col-md-8 mb-3">
-                                <label class="form-label fw-bold small text-muted">Cidade</label>
-                                {{ p_form.cidade }}
+                                <label class="form-label fw-bold small text-secondary">Cidade</label>
+                                <div class="dark-form-control">
+                                    {{ p_form.cidade }}
+                                </div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-bold small text-muted">Estado (UF)</label>
-                                {{ p_form.estado }}
+                                <label class="form-label fw-bold small text-secondary">Estado (UF)</label>
+                                <div class="dark-form-control">
+                                    {{ p_form.estado }}
+                                </div>
                             </div>
                         </div>
-                        <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-primary fw-bold px-5 py-2 shadow-sm">SALVAR
-                                ALTERAÇÕES</button>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn fw-bold px-5 py-3 shadow-lg btn-neon-save"
+                                style="background-color: var(--primary-color); border: none; color: #000; border-radius: 10px; font-size: 1.1rem; transition: 0.3s;">
+                                SALVAR TODAS AS ALTERAÇÕES
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -114,6 +140,7 @@
 <script>
     $(document).ready(function () {
         $('#id_cep').mask('00000-000');
+        $('input[name="telefone"]').mask('(00) 00000-0000');
 
         $('#id_cep').blur(function () {
             var cep = $(this).val().replace(/\D/g, '');
@@ -131,5 +158,4 @@
         });
     });
 </script>
-
 {% endblock %}
