@@ -1,35 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow">
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0"
+            style="background-color: #1a1f26; color: #ffffff; border: 1px solid var(--primary-color) !important;">
 
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Acesso ao Cliente | TechStore</h4>
+            <div class="card-header text-center py-4 border-0" style="background-color: rgba(0, 212, 255, 0.1);">
+                <h4 class="mb-0 fw-bold" style="color: var(--primary-color);">Acesso ao Cliente | TechStore</h4>
             </div>
 
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form action="{% url 'login' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">Usuário</label>
-                        <input type="text" name="username" class="form-control" id="id_username" required>
+                        <label for="id_username" class="form-label small fw-bold text-secondary">Usuário</label>
+                        <input type="text" name="username" class="form-control bg-dark border-secondary text-white"
+                            id="id_username" placeholder="Digite seu usuário" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">Senha</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label small fw-bold text-secondary">Senha</label>
+                        <input type="password" name="password" class="form-control bg-dark border-secondary text-white"
+                            id="id_password" placeholder="Digite sua senha" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Entrar na TechStore</button>
+
+                    <button type="submit" class="btn fw-bold w-100 py-2 shadow-sm"
+                        style="background-color: var(--primary-color); color: #000; border: none; border-radius: 8px;">
+                        ENTRAR NA TECHSTORE
+                    </button>
                 </form>
 
-                <br>
-                <p class="text-center">Não possui conta? <a href="{% url 'cadastro' %}">Cadastre-se agora!</a></p>
-                <p class="text-center">Dificuldades no acesso? Entre em contato com o nosso suporte.</p>
+                <div class="mt-4 pt-3 border-top border-secondary text-center">
+                    <p class="mb-1">Não possui conta?
+                        <a href="{% url 'cadastro' %}" class="fw-bold text-decoration-none"
+                            style="color: var(--primary-color);">Cadastre-se agora!</a>
+                    </p>
+                    <p class="small text-secondary">Dificuldades no acesso? <br> Entre em contato com o nosso suporte.
+                    </p>
+                </div>
 
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

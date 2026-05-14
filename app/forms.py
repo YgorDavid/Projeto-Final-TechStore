@@ -28,15 +28,22 @@ class CadastroForm(UserCreationForm):
         
         if commit:
             user.save()
+            
+            tel = self.cleaned_data.get('telefone')
+            rua = self.cleaned_data.get('logradouro')
+            num = self.cleaned_data.get('numero')
+            endereco_completo = f"{rua} - Nº {num}" if num else rua
+
             Perfil.objects.create(
                 usuario=user,
                 tipo_pessoa=self.cleaned_data['tipo_pessoa'],
                 documento=self.cleaned_data['cpf_cnpj'],
+                telefone=tel,
                 cep=self.cleaned_data['cep'],
-                endereco=self.cleaned_data['logradouro'],
+                endereco=endereco_completo,
                 cidade=self.cleaned_data['cidade'],
                 estado=self.cleaned_data['estado'],
-            )
+        )
         return user
 
 class UserUpdateForm(forms.ModelForm):
@@ -57,9 +64,10 @@ class PerfilUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Perfil
-        fields = ['foto', 'cep', 'endereco', 'cidade', 'estado']
+        fields = ['foto', 'telefone', 'cep', 'endereco', 'cidade', 'estado']
         widgets = {
-            'foto': forms.FileInput(attrs={'class': 'form-control bg-light'}),
+            'foto': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'id_foto'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_telefone'}),
             'cep': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_cep'}),
             'endereco': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_logradouro'}),
             'cidade': forms.TextInput(attrs={'class': 'form-control bg-light', 'id': 'id_cidade', 'readonly': 'readonly'}),

@@ -11,6 +11,7 @@ class Perfil(models.Model):
     foto = models.ImageField(upload_to='perfil_fotos/', null=True, blank=True)
     tipo_pessoa = models.CharField(max_length=2, choices=TIPO_PESSOA_CHOICES, default='PF')
     documento = models.CharField(max_length=18, unique=True, verbose_name="CPF/CNPJ")
+    telefone = models.CharField(max_length=20, null=True, blank=True)
     cep = models.CharField(max_length=9, verbose_name="CEP")
     endereco = models.CharField(max_length=255, verbose_name="Rua", blank=True, null=True)
     cidade = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
