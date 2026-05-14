@@ -164,7 +164,7 @@ def cadastro_view(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, f"Conta criada com sucesso para {user.username}! Faça o seu login abaixo.")
+            messages.success(request, f"Conta criada com sucesso para {user.username}! Faça o seu login.")
             return redirect('login')
         
         else:

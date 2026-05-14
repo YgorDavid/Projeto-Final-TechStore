@@ -192,6 +192,14 @@ svg {
     font-size: var(--text-lg);
 }
 
+.navbar-nav.ms-auto .nav-link {
+    color: var(--color-text-muted);
+}
+
+.navbar-nav.ms-auto .nav-link:hover {
+    color: var(--color-primary);
+}
+
 /* Search bar (centered on desktop) */
 @media (min-width: 992px) {
     .search-center {
@@ -287,6 +295,40 @@ svg {
     text-align: center;
     font-weight: 700;
     color: var(--color-text);
+}
+
+.is-invalid {
+    border: 2px solid #ff4d4d !important;
+    background-color: rgba(255, 77, 77, 0.1) !important;
+}
+
+.invalid-feedback {
+    color: #ff4d4d;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 4px;
+    display: block;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+}
+
+.form-control-dark {
+    background-color: #21262d !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    height: 45px !important;
+    box-shadow: none !important;
+}
+
+.form-control-dark:focus {
+    background-color: #282d35 !important;
+    border: 1px solid #00d4ff !important;
+    color: #ffffff !important;
 }
 
 /* =========================================
