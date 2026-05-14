@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import CadastroForm, AvaliacaoForm, UserUpdateForm, PerfilUpdateForm
+from .forms import CadastroForm, AvaliacaoForm, UserUpdateForm, PerfilUpdateForm, ProdutoForm
 from .models import *
 
 
@@ -15,12 +15,71 @@ def home_view(request):
     }
     return render(request, 'home.html', context)
 
+@login_required
 def produtos_view(request):
+    form = ProdutoForm()
+    form_avaliacao = AvaliacaoForm()
+    
+    if request.method == 'POST' and 'adicionar_produto' in request.POST:
+        form = ProdutoForm(request.POST, request.FILES)
+        if form.is_valid():
+            produto = form.save(commit=False)
+            loja_do_usuario = request.user.lojas_que_gerencio.first()
+            if loja_do_usuario:
+                produto.loja = loja_do_usuario
+                produto.save()
+                return redirect('produtos')
+            else:
+                form.add_error(None, 'Você precisa ter uma loja para adicionar produtos.')
+    
+    if request.method == 'POST' and 'adicionar_avaliacao' in request.POST:
+        form_avaliacao = AvaliacaoForm(request.POST)
+        if form_avaliacao.is_valid():
+            avaliacao = form_avaliacao.save(commit=False)
+            avaliacao.usuario = request.user
+            avaliacao.save()
+            return redirect('produtos')
+    
+    produtos = Produto.objects.all()
+    q = request.GET.get('q')
+    if q:
+        produtos = produtos.filter(nome__icontains=q)
+    
+    categoria_id = request.GET.get('categoria')
+    categoria_selecionada = None
+    if categoria_id:
+        try:
+            categoria_selecionada = int(categoria_id)
+            produtos = produtos.filter(categoria_id=categoria_selecionada)
+        except ValueError:
+            pass
+    
+    preco_min = request.GET.get('preco_min')
+    if preco_min:
+        try:
+            preco_min = float(preco_min)
+            produtos = produtos.filter(preco__gte=preco_min)
+        except ValueError:
+            pass
+    
+    preco_max = request.GET.get('preco_max')
+    if preco_max:
+        try:
+            preco_max = float(preco_max)
+            produtos = produtos.filter(preco__lte=preco_max)
+        except ValueError:
+            pass
+    
     context = {
-        
+        'usuario': request.user.username,
+        'produtos': produtos,
+        'categorias': Categoria.objects.all(),
+        'categoria_selecionada': categoria_selecionada,
+        'form': form,
+        'form_avaliacao': form_avaliacao,
     }
-
-    return render(request,'produtos.html', context)
+    
+    return render(request, 'produtos.html', context)
 
 @login_required(login_url='login')
 def dashboard_view(request):
@@ -105,7 +164,7 @@ def cadastro_view(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, f"Conta criada com sucesso para {user.username}! Faça o seu login abaixo.")
+            messages.success(request, f"Conta criada com sucesso para {user.username}! Faça o seu login.")
             return redirect('login')
         
         else:
