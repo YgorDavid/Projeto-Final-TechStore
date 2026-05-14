@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Perfil, Avaliacao
+from .models import Perfil, Avaliacao, Produto
 
 class CadastroForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
@@ -81,11 +81,17 @@ class PerfilUpdateForm(forms.ModelForm):
                 partes = self.instance.endereco.split(' - Nº ')
                 self.initial['endereco'] = partes[0]
                 self.initial['numero'] = partes[1]
+                        
+class ProdutoForm(forms.ModelForm):
+    class Meta:
+        model = Produto
+        fields = ['nome', 'categoria', 'descricao', 'preco', 'preco_custo', 
+                  'estoque', 'imagem', 'especificacoes']
 
 class AvaliacaoForm(forms.ModelForm):
     class Meta:
         model = Avaliacao
-        fields = ['nota', 'comentario']
+        fields = ['produto', 'nota', 'comentario']
         widgets = {
             'nota': forms.Select(attrs={'class': 'form-select'}),
             'comentario': forms.Textarea(attrs={
@@ -98,14 +104,3 @@ class AvaliacaoForm(forms.ModelForm):
             'nota': 'Sua avaliação',
             'comentario': 'Comentário (opcional)',
         }
-
-#  Pode ser usado para criar um formulário de cadastro de produtos no futuro.
-
-# class CursoForm(forms.ModelForm):
-#     class Meta:
-#         model = Curso
-#         fields = [
-#             'nome',
-#             'carga_horaria',
-#             'nivel',
-#  ]

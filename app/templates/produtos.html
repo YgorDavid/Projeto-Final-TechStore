@@ -1,79 +1,155 @@
-<!-- 
-    
-    Código reutilizado do projeto antigo
-    
 {% extends 'base.html' %}
 
 {% block content %}
 
 {% if user.is_authenticated %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-white fw-bold m-0"><i class="bi bi-cpu me-2" style="color: #00d4ff;"></i>PRODUTOS</h3>
+        <div class="d-flex gap-2">
+            {% if user.perfil and user.perfil.tipo_pessoa == 'PJ' %}
+            <button class="btn btn-outline-info border-2 fw-bold px-3" data-bs-toggle="modal"
+                data-bs-target="#modalProduto"
+                style="border-color: #00d4ff; color: #00d4ff; border-radius: 10px; font-size: 0.85rem;">
+                + ADICIONAR PRODUTO
+            </button>
+            {% endif %}
+            <button class="btn btn-outline-light fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalAvaliacao"
+                style="border-radius: 10px; font-size: 0.85rem;">
+                AVALIAR
+            </button>
+        </div>
+    </div>
 
-<p>Bem-vindo de volta, {{ usuario }}!</p>
-<h3>Cursos:</h3>
+    <div class="p-4 mb-5 shadow-lg" style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333;">
+        <div class="text-center py-2 mb-4 fw-bolder"
+            style="background-color: #00d4ff; border-radius: 8px; color: #000; letter-spacing: 1px; font-size: 0.9rem;">
+            <i class="bi bi-funnel-fill me-2"></i> FILTRAR BUSCA
+        </div>
 
-<ul>
-    {% for curso in cursos %}
-    <br>
-    <li><strong>{{ curso.nome }}</strong> <br> Carga Horária: {{curso.carga_horaria}} horas <br> Nível: {{curso.nivel}}
-    </li>
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold text-secondary mb-1">BUSCAR POR NOME</label>
+                <input type="text" name="q" class="form-control border-0" placeholder="..." value="{{ request.GET.q }}"
+                    style="background-color: #2b3035; color: white; border-radius: 10px; height: 45px;">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-secondary mb-1">CATEGORIA</label>
+                <select name="categoria" class="form-select border-0 shadow-none"
+                    style="background-color: #2b3035; color: white; border-radius: 10px; height: 45px;">
+                    <option value="">Todas</option>
+                    {% for cat in categorias %}
+                    <option value="{{ cat.id }}" {% if categoria_selecionada == cat.id %}selected{% endif %}>{{ cat.nome
+                        }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-secondary mb-1">PREÇO MÍN.</label>
+                <input type="number" step="0.01" name="preco_min" class="form-control border-0" placeholder="R$"
+                    value="{{ request.GET.preco_min }}"
+                    style="background-color: #2b3035; color: white; border-radius: 10px; height: 45px;">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-secondary mb-1">PREÇO MÁX.</label>
+                <input type="number" step="0.01" name="preco_max" class="form-control border-0" placeholder="R$"
+                    value="{{ request.GET.preco_max }}"
+                    style="background-color: #2b3035; color: white; border-radius: 10px; height: 45px;">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn border-0 fw-bold w-100 shadow"
+                    style="background-color: #00d4ff; color: #000; border-radius: 10px; height: 45px;">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
 
-    {% endfor %}
-</ul>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for produto in produtos %}
+        <div class="col">
+            <div class="card h-100 border-0"
+                style="background-color: #1a1d21; border-radius: 20px; border: 1px solid #333 !important;">
+                {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" class="card-img-top p-3" alt="{{ produto.nome }}"
+                    style="height: 200px; object-fit: contain; border-radius: 25px;">
+                {% endif %}
+                <div class="card-body">
+                    <span class="badge mb-2 px-2 py-1"
+                        style="background-color: rgba(0, 212, 255, 0.1); color: #00d4ff; border-radius: 5px;">
+                        {{ produto.categoria.nome|default:"Geral" }}
+                    </span>
+                    <h5 class="card-title text-white fw-bold">{{ produto.nome }}</h5>
+                    <p class="card-text text-secondary small mb-3">{{ produto.descricao|truncatechars:70 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h4 mb-0 fw-bold" style="color: #00d4ff;">R$ {{ produto.preco }}</span>
+                        <div class="text-secondary small"><i class="bi bi-box me-1"></i>{{ produto.estoque }} un.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5" style="color: #495057;">
+            <i class="bi bi-inbox display-1"></i>
+            <p class="mt-3 fw-bold">Nenhum produto encontrado.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCurso">
-    Criar novo Curso
-</button>
-
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAvaliacao">
-    Fazer Avaliação do Curso
-</button>
 {% else %}
-
-<p>Por favor, faça login.</p>
-
+<div class="container text-center py-5">
+    <h3 class="text-white">Acesso restrito. Faça login para continuar.</h3>
+    <a href="{% url 'login' %}" class="btn mt-3 fw-bold shadow-sm"
+        style="background-color: #00d4ff; color: black; border-radius: 10px;">Login</a>
+</div>
 {% endif %}
 
-<div class="modal fade" id="modalCurso" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalProduto" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="cursoModalLabel">Novo curso</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0"
+            style="background-color: #1a1d21; color: white; border-radius: 15px; border: 1px solid #00d4ff !important;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" style="color: #00d4ff;">NOVO PRODUTO</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
                     {% csrf_token %}
+                    <input type="hidden" name="adicionar_produto" value="1">
                     {{ form.as_p }}
-                    <hr>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </form>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="submit" class="btn fw-bold w-100 shadow"
+                        style="background-color: #00d4ff; color: black; border-radius: 10px; height: 45px;">SALVAR
+                        PRODUTO</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="modalAvaliacao" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Deixe sua Avaliação</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0"
+            style="background-color: #1a1d21; color: white; border-radius: 15px; border: 1px solid #adb5bd !important;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-white">DEIXE SUA AVALIAÇÃO</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body">
-                <form method="POST">
-
+            <form method="POST">
+                <div class="modal-body">
                     {% csrf_token %}
+                    <input type="hidden" name="adicionar_avaliacao" value="1">
                     {{ form_avaliacao.as_p }}
-
-                    <hr>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </form>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="submit" class="btn btn-light fw-bold w-100 shadow"
+                        style="border-radius: 10px; height: 45px;">ENVIAR AVALIAÇÃO</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    {% endblock %} -->
+{% endblock %}
