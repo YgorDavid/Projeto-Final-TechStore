@@ -44,20 +44,30 @@ class Loja(models.Model):
         return self.nome_da_loja
 
 class Produto(models.Model):
+    CATEGORIA_CHOICES = [
+        ('smartphones', 'Smartphones'),
+        ('notebooks', 'Notebooks'),
+        ('acessorios', 'Acessórios'),
+        ('outros', 'Outros'),
+    ]
+    
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name='produtos')
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    categoria = models.CharField(
+    max_length=50, 
+    choices=CATEGORIA_CHOICES, 
+    null=True, 
+    blank=True
+)
     nome = models.CharField(max_length=200)
     descricao = models.TextField()
     
     # Campos Financeiros
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    preco_custo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00) # Adicionado aqui
+    preco_custo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
     estoque = models.PositiveIntegerField(default=0)
     imagem = models.ImageField(upload_to='produtos/') 
     especificacoes = models.TextField(help_text="Ex: RAM, CPU, Versão do Software")
-    criado_em = models.DateTimeField(auto_now_add=True)
-    atualizado_em = models.DateTimeField(auto_now=True)
 
     # --- KPIs de Custo e Financeiros (Jorge) ---
     def calcular_margem_abs(self):
@@ -99,8 +109,6 @@ class Avaliacao(models.Model):
 
     def __str__(self):
         return f"Nota {self.nota} para {self.produto} por {self.usuario.username}"
-
-    
 
 class Pedido(models.Model):
     STATUS_CHOICES = [

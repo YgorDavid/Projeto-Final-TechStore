@@ -55,6 +55,10 @@
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label label-custom">Senha</label>
                                     {{ form.password1 }}
+                                    <div class="form-text small mt-1" style="color: #8a94a6; font-size: 0.75rem;">
+                                        <i class="bi bi-info-circle me-1" style="color: #00d4ff;"></i>Mínimo de 8
+                                        caracteres, incluindo letra maiúscula e minúscula.
+                                    </div>
                                     {% if form.password1.errors %}
                                     <div class="invalid-feedback d-block mt-1 error-msg">
                                         <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.password1.errors.0 }}
@@ -214,6 +218,24 @@
             $('#btnText').text('PROCESSANDO...');
             $('#btnSpinner').removeClass('d-none');
         });
+    });
+</script>
+
+<div id="div_loja" style="display: none;">
+    <label class="text-white">NOME DA LOJA (Obrigatório para PJ)</label>
+    {{ form.nome_da_loja }}
+</div>
+
+<script>
+    const tipoPessoaSelect = document.getElementById('id_tipo_pessoa');
+    const divLoja = document.getElementById('div_loja');
+
+    tipoPessoaSelect.addEventListener('change', function () {
+        if (this.value === 'PJ') {
+            divLoja.style.display = 'block';
+        } else {
+            divLoja.style.display = 'none';
+        }
     });
 </script>
 

@@ -8,14 +8,13 @@
         <h3 class="text-white fw-bold m-0"><i class="bi bi-cpu me-2" style="color: #00d4ff;"></i>PRODUTOS</h3>
         <div class="d-flex gap-2">
             {% if user.perfil and user.perfil.tipo_pessoa == 'PJ' %}
-            <button class="btn btn-outline-info border-2 fw-bold px-3" data-bs-toggle="modal"
-                data-bs-target="#modalProduto"
-                style="border-color: #00d4ff; color: #00d4ff; border-radius: 10px; font-size: 0.85rem;">
+            <button class="btn btn-outline-light fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalProduto"
+                style="border-radius: 10px; font-size: 0.85rem; border-color: #00d4ff; color: #00d4ff;">
                 + ADICIONAR PRODUTO
             </button>
             {% endif %}
             <button class="btn btn-outline-light fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalAvaliacao"
-                style="border-radius: 10px; font-size: 0.85rem;">
+                style="border-radius: 10px; font-size: 0.85rem; border-color: #00d4ff; color: #00d4ff;">
                 AVALIAR
             </button>
         </div>
@@ -65,6 +64,7 @@
         </form>
     </div>
 
+    {% if produtos %}
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for produto in produtos %}
         <div class="col">
@@ -77,7 +77,7 @@
                 <div class="card-body">
                     <span class="badge mb-2 px-2 py-1"
                         style="background-color: rgba(0, 212, 255, 0.1); color: #00d4ff; border-radius: 5px;">
-                        {{ produto.categoria.nome|default:"Geral" }}
+                        {{ produto.get_categoria_display|default:"Geral" }}
                     </span>
                     <h5 class="card-title text-white fw-bold">{{ produto.nome }}</h5>
                     <p class="card-text text-secondary small mb-3">{{ produto.descricao|truncatechars:70 }}</p>
@@ -88,13 +88,14 @@
                 </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5" style="color: #495057;">
-            <i class="bi bi-inbox display-1"></i>
-            <p class="mt-3 fw-bold">Nenhum produto encontrado.</p>
-        </div>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="text-center py-5 w-100" style="color: #6c757d;">
+        <i class="bi bi-inbox display-1 d-block mb-3" style="color: #333d4a;"></i>
+        <p class="fw-bold fs-5">Nenhum produto encontrado.</p>
+    </div>
+    {% endif %}
 </div>
 
 {% else %}
@@ -121,8 +122,9 @@
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="submit" class="btn fw-bold w-100 shadow"
-                        style="background-color: #00d4ff; color: black; border-radius: 10px; height: 45px;">SALVAR
-                        PRODUTO</button>
+                        style="background-color: #00d4ff; color: black; border-radius: 10px; height: 45px;">
+                        SALVAR PRODUTO
+                    </button>
                 </div>
             </form>
         </div>
@@ -138,18 +140,36 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
-                <div class="modal-body">
+                <div class="modal-body text-dark labels-white">
                     {% csrf_token %}
                     <input type="hidden" name="adicionar_avaliacao" value="1">
                     {{ form_avaliacao.as_p }}
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="submit" class="btn btn-light fw-bold w-100 shadow"
-                        style="border-radius: 10px; height: 45px;">ENVIAR AVALIAÇÃO</button>
+                        style="border-radius: 10px; height: 45px; border-color: #00d4ff; color: #00d4ff;">
+                        ENVIAR AVALIAÇÃO
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .labels-white p {
+        color: white !important;
+    }
+
+    .labels-white select,
+    .labels-white textarea {
+        background-color: #2b3035 !important;
+        color: white !important;
+        border: 1px solid #444 !important;
+        border-radius: 8px;
+        padding: 8px;
+        width: 100%;
+    }
+</style>
 
 {% endblock %}
