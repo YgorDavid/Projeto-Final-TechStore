@@ -1,40 +1,43 @@
+from django.shortcuts import render, redirect 
 from django.contrib.auth import authenticate, login, logout 
-from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm 
 from django.contrib import messages
-from .forms import CadastroForm, AvaliacaoForm
-from .models import *
+from django import forms
+from .models import Perfil 
+
+# --- 1. FORMULÁRIO DE CADASTRO INTELIGENTE (HÍBRIDO PF/PJ) ---
+class CadastroForm(UserCreationForm):
+    documento = forms.CharField(
+        label="CPF ou CNPJ",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control', 
+            'placeholder': '000.000.000-00 ou 00.000.000/0000-00',
+        })
+    )
+    cep = forms.CharField(
+        label="CEP",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00000-000'})
+    )
+
+    field_order = ['username', 'documento', 'cep', 'password', 'password_confirm']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.help_text = None
+            field.widget.attrs.update({'class': 'form-control'})
+
+    def clean_documento(self):
+        doc = ''.join(filter(str.isdigit, self.cleaned_data.get('documento', '')))
+        if len(doc) not in [11, 14]:
+            raise forms.ValidationError("Digite um CPF (11 números) ou CNPJ (14 números) válido.")
+        return doc
+
+# --- 2. VIEWS (LÓGICA DAS PÁGINAS) ---
 
 def home_view(request):
-    produtos = Produto.objects.all()
-    context = {
-        'nome_empresa': 'TechStore',
-        'produtos': produtos
-    }
+    context = {'nome_empresa': 'TechStore'}
     return render(request, 'home.html', context)
-
-def produtos_view(request):
-    context = {
-        
-    }
-
-    return render(request,'produtos.html', context)
-
-@login_required
-def avaliar_produto(request, produto_id):
-    produto = get_object_or_404(Produto, id=produto_id)
-    
-    if request.method == 'POST':
-        form = AvaliacaoForm(request.POST)
-        if form.is_valid():
-            avaliacao = form.save(commit=False)
-            avaliacao.usuario = request.user
-            avaliacao.produto = produto
-            avaliacao.save()
-            
-            return redirect('detalhe_produto', pk=produto.id)
 
 def login_view(request):
     if request.method == 'POST':
@@ -43,16 +46,13 @@ def login_view(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             usuario = authenticate(username=username, password=password)
-            
             if usuario is not None:
-                print(f"Usuário {username} autenticado com sucesso!")
                 login(request, usuario)
                 return redirect('home')
             else:
-                print(f"Falha na autenticação para o usuário: {username}")
-                messages.error(request, "Usuário ou senha inválidos.  Tente novamente!")
+                messages.error(request, "Usuário ou senha inválidos.")
         else:
-            messages.error(request, "Informações inválidas. Tente novamente!")
+            messages.error(request, "Informações inválidas.")
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -62,18 +62,22 @@ def cadastro_view(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return render(request, 'cadastro.html', {'mostrar_bem_vindo': True, 'nome_usuario': user.username})
-        else:
-            return render(request, 'cadastro.html', {'form': form, 'mostrar_bem_vindo': False})
+            doc = form.clean_documento()
+            tipo = 'PF' if len(doc) == 11 else 'PJ'
+            
+            Perfil.objects.create(
+                usuario=user,
+                tipo_pessoa=tipo,
+                documento=doc,
+                cep=form.cleaned_data.get('cep')
+            )
+            
+            messages.success(request, f"Bem-vindo à TechStore! Conta {tipo} criada com sucesso.")
+            return redirect('login')
     else:
         form = CadastroForm()
     return render(request, 'cadastro.html', {'form': form})
-
     
 def logout_view(request):
     logout(request)
-
-    messages.info(request, "Você saiu com sucesso.")
-
     return redirect('login')
-
