@@ -1,12 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechStore | Sua Loja de Tecnologia</title>
-    <!-- Ajustei a versão do Bootstrap para uma estável para evitar erros de CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
@@ -30,15 +30,27 @@
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="#">Carrinho</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Favoritos</a></li>
-                        <li class="nav-item">
-                            {% if not user.is_authenticated %}
+                        
+                        <!-- LÓGICA DE LOGIN / LOGOUT / CADASTRO -->
+                        {% if not user.is_authenticated %}
+                            <li class="nav-item">
                                 <a class="nav-link" href="{% url 'login' %}">Login</a>
-                            {% else %}
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                            {% endif %}
-                        </li>
+                            </li>
+                            <li class="nav-item">
+                                <!-- Botão de Cadastro adicionado aqui -->
+                                <a class="nav-link fw-bold text-primary" href="{% url 'cadastro' %}">Cadastrar</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <span class="nav-link text-success">Olá, {{ user.username }}</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+                            </li>
+                        {% endif %}
                     </ul>
-                    <form class="d-flex" role="search">
+
+                    <form class="d-flex ms-lg-3" role="search">
                         <input class="form-control me-2" type="search" placeholder="Buscar produtos..." aria-label="Search" />
                         <button class="btn btn-outline-success" type="submit">Buscar</button>
                     </form>
@@ -47,9 +59,19 @@
         </nav>
     </header>
 
-    <main>
+    <main class="container my-4">
+        <!-- Exibição de mensagens (Sucesso/Erro) -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
-        <!-- Seu login.html entrará aqui automaticamente -->
+        <!-- O conteúdo das outras páginas entrará aqui -->
         {% endblock %}
     </main>
 

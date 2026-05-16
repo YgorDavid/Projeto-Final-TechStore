@@ -2,32 +2,57 @@
 
 {% block content %}
 <div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow">
-
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Cadastro</h4>
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0" style="border-radius: 15px;">
+            <div class="card-header bg-dark text-white text-center py-3" style="border-radius: 15px 15px 0 0;">
+                <h4 class="mb-0 fw-bold">Junte-se à TechStore</h4>
+                <small class="text-light-50">Sua jornada tecnológica começa aqui</small>
             </div>
-
-            <div class="card-body">
-                <form action="" method="POST">
-
+            <div class="card-body p-4">
+                <form method="POST" id="form-cadastro">
                     {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger x-small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
 
-                    {{ form.as_p }}
-
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Criar conta</button>
-
+                    <button type="submit" class="btn btn-primary w-100 py-3 mt-3 fw-bold shadow-sm" style="border-radius: 10px; transition: 0.3s;">
+                        CRIAR MINHA CONTA
+                    </button>
                 </form>
+            </div>
+            <div class="card-footer bg-white border-0 text-center pb-4">
+                <p class="text-muted mb-0">Já é nosso cliente? <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">Faça login</a></p>
             </div>
         </div>
     </div>
 </div>
 
-{% if mostrar_bem_vindo %}
+<!-- Scripts de Máscara Profissional -->
+<script src="https://unpkg.com/imask"></script>
+<script>
+    // Máscara para CPF/CNPJ dinâmico
+    var docElement = document.getElementById('id_documento');
+    var docMask = IMask(docElement, {
+        mask: [
+            { mask: '000.000.000-00', maxLength: 11 },
+            { mask: '00.000.000/0000-00' }
+        ]
+    });
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    // Máscara para CEP
+    var cepElement = document.getElementById('id_cep');
+    var cepMask = IMask(cepElement, { mask: '00000-000' });
+</script>
 
-{% endif %}
-
+<style>
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    .form-control:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); }
+</style>
 {% endblock %}
