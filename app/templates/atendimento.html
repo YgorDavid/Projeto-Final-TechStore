@@ -23,16 +23,19 @@
                     <div class="mb-3">
                         <label for="nome" class="form-label small text-secondary fw-bold">NOME</label>
                         <input type="text" class="form-control border-0" id="nome" placeholder="Seu nome" required
+                            value="{{ request.user.get_full_name|default:request.user.username }}"
                             style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label small text-secondary fw-bold">E-MAIL</label>
                         <input type="email" class="form-control border-0" id="email" placeholder="Seu e-mail" required
+                            value="{{ request.user.email }}"
                             style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label for="telefone" class="form-label small text-secondary fw-bold">TELEFONE</label>
                         <input type="tel" class="form-control border-0" id="telefone" placeholder="Seu telefone"
+                            value="{{ perfil.telefone|default:'' }}"
                             style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
                     <div class="mb-3">
@@ -104,7 +107,8 @@
         var toast = new bootstrap.Toast(toastElement);
         toast.show();
 
-        this.reset();
+        document.getElementById('assunto').value = '';
+        document.getElementById('mensagem').value = '';
     });
 </script>
 

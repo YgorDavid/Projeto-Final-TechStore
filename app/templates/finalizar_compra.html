@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+
+    <h3 class="text-white fw-bold mb-4"><i class="bi bi-credit-card-2-front-fill me-2"
+            style="color: #00d4ff;"></i>FINALIZAR COMPRA
+        <br><br>
+        <p class="text-white-50 fs-6 fw-normal">Preencha seus dados de entrega e pagamento para concluir o pedido.</p>
+    </h3><br>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="p-4 shadow-lg" style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333;">
+
+                <div class="text-center py-2 mb-4 fw-bolder"
+                    style="background-color: #00d4ff; border-radius: 8px; color: #000; letter-spacing: 1px; font-size: 0.9rem;">
+                    <i class="bi bi-person-lines-fill me-2"></i> DADOS DE ENTREGA E PAGAMENTO
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <h6 class="mb-3 text-white fw-bold text-uppercase" style="letter-spacing: 1px;">
+                        <i class="bi bi-person-fill me-2" style="color: #00d4ff;"></i> Dados do Cliente
+                    </h6>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-secondary fw-bold">NOME COMPLETO</label>
+                            <input type="text" class="form-control border-0" name="nome" required
+                                value="{{ request.user.get_full_name|default:request.user.username }}"
+                                style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-secondary fw-bold">E-MAIL</label>
+                            <input type="email" class="form-control border-0" name="email" required
+                                value="{{ request.user.email }}"
+                                style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small text-secondary fw-bold">TELEFONE</label>
+                        <input type="text" class="form-control border-0" name="telefone" required
+                            value="{{ perfil.telefone|default:'' }}"
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-secondary fw-bold">ENDEREÇO COMPLETO</label>
+                        <input type="text" class="form-control border-0" name="endereco" required
+                            value="{{ perfil.endereco|default:'' }}"
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label small text-secondary fw-bold">CIDADE</label>
+                            <input type="text" class="form-control border-0" name="cidade" required
+                                value="{{ perfil.cidade|default:'' }}"
+                                style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label small text-secondary fw-bold">ESTADO</label>
+                            <input type="text" class="form-control border-0" name="estado" required
+                                value="{{ perfil.estado|default:'' }}"
+                                style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small text-secondary fw-bold">CEP</label>
+                            <input type="text" class="form-control border-0" name="cep" required
+                                value="{{ perfil.cep|default:'' }}"
+                                style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                        </div>
+                    </div>
+
+                    <hr style="border-color: #30363d; margin: 2rem 0;">
+
+                    <h6 class="mb-3 text-white fw-bold text-uppercase" style="letter-spacing: 1px;">
+                        <i class="bi bi-wallet2 me-2" style="color: #00d4ff;"></i> Método de Pagamento
+                    </h6>
+
+                    <div class="mb-4">
+                        <label class="form-label small text-secondary fw-bold">SELECIONE A FORMA DE PAGAMENTO</label>
+                        <select class="form-select border-0" name="pagamento" required
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
+                            <option value="" selected disabled>Escolha uma opção...</option>
+                            <option value="pix">PIX (Aprovação Imediata)</option>
+                            <option value="cartao">Cartão de Crédito (Até 12x)</option>
+                            <option value="boleto">Boleto Bancário</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn fw-bold w-100 mt-2 shadow"
+                        style="background-color: #00d4ff; color: black; border-radius: 10px; height: 50px; letter-spacing: 1px;">
+                        CONFIRMAR PEDIDO
+                        <i class="bi bi-check-circle-fill ms-2"></i>
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="p-4 shadow-lg position-sticky"
+                style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333; top: 20px;">
+
+                <div class="text-center py-2 mb-4 fw-bolder"
+                    style="background-color: #21262d; border-radius: 8px; color: #00d4ff; letter-spacing: 1px; font-size: 0.9rem; border: 1px solid #30363d;">
+                    <i class="bi bi-receipt-cutoff me-2"></i> RESUMO DO PEDIDO
+                </div>
+
+                <div class="mb-4" style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+                    {% for item in carrinho %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom: 1px dashed #30363d;">
+                        <div>
+                            <h6 class="mb-1 text-white fw-bold fs-6">
+                                {{ item.produto.nome }}
+                            </h6>
+                            <small class="text-white-50 d-block">
+                                Qtd: {{ item.quantidade }} x R$ {{ item.preco }}
+                            </small>
+                        </div>
+                        <span class="fw-bold" style="color: #00d4ff; font-size: 1.05rem;">
+                            R$ {{ item.total }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="p-3 mb-3"
+                    style="background-color: #21262d; border-radius: 12px; border: 1px solid #30363d;">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-white-50 small fw-bold text-uppercase">Subtotal</span>
+                        <span class="text-white fw-bold">R$ {{ carrinho.get_total_preco }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-white-50 small fw-bold text-uppercase">Frete</span>
+                        <span class="fw-bold" style="color: #3fb950;">Grátis</span>
+                    </div>
+
+                    <hr style="border-color: #30363d; margin: 0.8rem 0;">
+
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <h5 class="fw-bold mb-0 text-white text-uppercase" style="letter-spacing: 1px;">Total</h5>
+                        <h3 class="fw-black mb-0" style="color: #00d4ff; font-weight: 900;">
+                            R$ {{ carrinho.get_total_preco }}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3 text-white-50 small d-flex align-items-center justify-content-center"
+                    style="font-size: 0.85rem; opacity: 0.7;">
+                    <i class="bi bi-shield-lock me-2" style="font-size: 1rem;"></i> Pagamento seguro via MasterCard
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

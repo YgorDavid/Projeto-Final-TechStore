@@ -31,9 +31,11 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'atendimento' %}">Atendimento</a></li>
                     </ul>
 
-                    <form class="d-flex mx-auto my-2 my-lg-0" role="search" style="width: 40%; max-width: 500px;">
+                    <form action="{% url 'produtos' %}" method="GET" class="d-flex mx-auto my-2 my-lg-0" role="search"
+                        style="width: 40%; max-width: 500px;">
                         <div class="input-group">
-                            <input class="form-control border-0" type="search" placeholder="Buscar produtos..."
+                            <input class="form-control border-0" type="search" name="q" placeholder="Buscar produtos..."
+                                value="{{ request.GET.q|default:'' }}"
                                 style="background-color: #21262d; color: white; border-radius: 8px 0 0 8px;">
                             <button class="btn" type="submit"
                                 style="background-color: #00d4ff; color: black; border-radius: 0 8px 8px 0;">
@@ -43,8 +45,9 @@
                     </form>
 
                     <div class="navbar-nav ms-auto align-items-center">
-                        <a class="nav-link" href="#"><i class="bi bi-cart3 me-1"></i> Carrinho</a>
-                        <a class="nav-link" href="#"><i class="bi bi-heart me-1"></i> Favoritos</a>
+                        <a class="nav-link" href="{% url 'detalhe_carrinho' %}"><i class="bi bi-cart3 me-1"></i>
+                            Carrinho</a>
+                        <a class="nav-link" href="{% url 'favoritos' %}"><i class="bi bi-heart me-1"></i> Favoritos</a>
 
                         {% if user.is_authenticated %}
                         <a class="nav-link btn btn-outline-info ms-lg-3 px-3" href="{% url 'dashboard' %}"

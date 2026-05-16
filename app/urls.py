@@ -9,4 +9,10 @@ urlpatterns = [
     path('produtos/', views.produtos_view, name='produtos'),
     path('minha-conta/', views.dashboard_view, name='dashboard'),
     path('atendimento/', views.atendimento_view, name='atendimento'),
+    path('carrinho/', views.detalhe_carrinho, name='detalhe_carrinho'),
+    path('carrinho/adicionar/<int:produto_id>/', views.carrinho_adicionar, name='carrinho_adicionar'),
+    path('carrinho/remover/<int:produto_id>/', views.carrinho_remover, name='carrinho_remover'),
+    path('carrinho/finalizar/', views.finalizar_compra, name='finalizar_compra'),
+    path('favoritos/', views.lista_favoritos, name='favoritos'),
+    path('favoritos/alternar/<int:produto_id>/', views.alternar_favorito, name='alternar_favorito'),
 ]
