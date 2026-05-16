@@ -4,44 +4,56 @@
 
 <div class="container mt-4">
     <h3 class="text-white fw-bold mb-4"><i class="bi bi-headset me-2" style="color: #00d4ff;"></i>ATENDIMENTO AO CLIENTE
-    </h3>
+        <br><br>
+        <p class="text-white-50">Estamos à disposição para tirar suas dúvidas!</p>
+    </h3><br>
+
     <div class="p-4 mb-5 shadow-lg" style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333;">
         <div class="text-center py-2 mb-4 fw-bolder"
             style="background-color: #00d4ff; border-radius: 8px; color: #000; letter-spacing: 1px; font-size: 0.9rem;">
             <i class="bi bi-chat-dots-fill me-2"></i> COMO POSSO AJUDAR VOCÊ?
         </div>
+
         <div class="row g-4">
             <div class="col-md-6">
                 <h5 class="text-white fw-bold mb-3"><i class="bi bi-envelope-fill me-2"
                         style="color: #00d4ff;"></i>ENTRE EM CONTATO CONOSCO</h5>
-                <form>
-                    <div class="mb-3"> <label for="nome" class="form-label small text-secondary fw-bold">NOME</label>
-                        <input type="text" class="form-control border-0" id="nome" placeholder="Seu nome"
-                            style="background-color: #21262d; color: white; border-radius: 10px;">
+
+                <form id="formAtendimento">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label small text-secondary fw-bold">NOME</label>
+                        <input type="text" class="form-control border-0" id="nome" placeholder="Seu nome" required
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
-                    <div class="mb-3"> <label for="email" class="form-label small text-secondary fw-bold">E-MAIL</label>
-                        <input type="email" class="form-control border-0" id="email" placeholder="Seu e-mail"
-                            style="background-color: #21262d; color: white; border-radius: 10px;">
+                    <div class="mb-3">
+                        <label for="email" class="form-label small text-secondary fw-bold">E-MAIL</label>
+                        <input type="email" class="form-control border-0" id="email" placeholder="Seu e-mail" required
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
-                    <div class="mb-3"> <label for="telefone"
-                            class="form-label small text-secondary fw-bold">TELEFONE</label> <input type="tel"
-                            class="form-control border-0" id="telefone" placeholder="Seu telefone"
-                            style="background-color: #21262d; color: white; border-radius: 10px;">
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label small text-secondary fw-bold">TELEFONE</label>
+                        <input type="tel" class="form-control border-0" id="telefone" placeholder="Seu telefone"
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
-                    <div class="mb-3"> <label for="assunto"
-                            class="form-label small text-secondary fw-bold">ASSUNTO</label> <input type="text"
-                            class="form-control border-0" id="assunto" placeholder="Assunto"
-                            style="background-color: #21262d; color: white; border-radius: 10px;">
+                    <div class="mb-3">
+                        <label for="assunto" class="form-label small text-secondary fw-bold">ASSUNTO</label>
+                        <input type="text" class="form-control border-0" id="assunto" placeholder="Assunto" required
+                            style="background-color: #21262d; color: white; border-radius: 10px; height: 45px;">
                     </div>
-                    <div class="mb-3"> <label for="mensagem"
-                            class="form-label small text-secondary fw-bold">MENSAGEM</label> <textarea
-                            class="form-control border-0" id="mensagem" rows="4"
-                            placeholder="Descreva como podemos ajudá-lo(a)"
+                    <div class="mb-3">
+                        <label for="mensagem" class="form-label small text-secondary fw-bold">MENSAGEM</label>
+                        <textarea class="form-control border-0" id="mensagem" rows="4"
+                            placeholder="Descreva como podemos ajudá-lo(a)" required
                             style="background-color: #21262d; color: white; border-radius: 10px;"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">ENVIAR MENSAGEM</button>
+
+                    <button type="submit" class="btn fw-bold w-100 shadow"
+                        style="background-color: #00d4ff; color: black; border-radius: 10px; height: 45px; letter-spacing: 1px;">
+                        ENVIAR MENSAGEM
+                    </button>
                 </form>
             </div>
+
             <div class="col-md-6">
                 <h5 class="text-white fw-bold mb-3"><i class="bi bi-info-circle-fill me-2"
                         style="color: #00d4ff;"></i>INFORMAÇÕES DE CONTATO</h5>
@@ -54,16 +66,46 @@
                         Sábado: 8h às 20h </p>
                     <p class="text-white mb-4"> <i class="bi bi-clock-fill me-2" style="color: #00d4ff;"></i> Domingos e
                         Feriados: 9h às 18h </p>
-                    <div class="social-icons mt-3"> <a href="#" class="me-3"
-                            style="color: #00d4ff; font-size: 1.4rem;"><i class="bi bi-instagram"></i></a> <a href="#"
-                            class="me-3" style="color: #00d4ff; font-size: 1.4rem;"><i class="bi bi-facebook"></i></a>
+                    <div class="social-icons mt-3">
                         <a href="#" class="me-3" style="color: #00d4ff; font-size: 1.4rem;"><i
-                                class="bi bi-whatsapp"></i></a> <a href="#"
-                            style="color: #00d4ff; font-size: 1.4rem;"><i class="bi bi-tiktok"></i></a>
+                                class="bi bi-instagram"></i></a>
+                        <a href="#" class="me-3" style="color: #00d4ff; font-size: 1.4rem;"><i
+                                class="bi bi-facebook"></i></a>
+                        <a href="#" class="me-3" style="color: #00d4ff; font-size: 1.4rem;"><i
+                                class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="me-3" style="color: #00d4ff; font-size: 1.4rem;"><i
+                                class="bi bi-tiktok"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div id="toastSucesso" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive"
+        aria-atomic="true" data-bs-delay="5000" style="background-color: #21262d; color: white;">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill me-2" style="color: #00d4ff;"></i>
+                Mensagem enviada com sucesso!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('formAtendimento').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var toastElement = document.getElementById('toastSucesso');
+        var toast = new bootstrap.Toast(toastElement);
+        toast.show();
+
+        this.reset();
+    });
+</script>
+
 {% endblock %}
