@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row g-4">
+
+        <!-- FORMULÁRIO -->
+        <div class="col-lg-7">
+            <div class="p-4 text-white shadow"
+                 style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333;">
+
+                <h2 class="fw-bold mb-4" style="color: #00d4ff;">
+                    <i class="bi bi-credit-card-2-front-fill me-2"></i>
+                    FINALIZAR COMPRA
+                </h2>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- DADOS PESSOAIS -->
+                    <h5 class="mb-3 text-white">
+                        <i class="bi bi-person-fill me-2"></i>
+                        Dados do Cliente
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nome Completo</label>
+
+                            <input type="text"
+                                   class="form-control bg-dark text-white border-secondary"
+                                   name="nome"
+                                   placeholder="Digite seu nome"
+                                   required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">E-mail</label>
+
+                            <input type="email"
+                                   class="form-control bg-dark text-white border-secondary"
+                                   name="email"
+                                   placeholder="Digite seu e-mail"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Telefone</label>
+
+                        <input type="text"
+                               class="form-control bg-dark text-white border-secondary"
+                               name="telefone"
+                               placeholder="(00) 00000-0000"
+                               required>
+                    </div>
+
+                    <!-- ENDEREÇO -->
+                    <h5 class="mt-4 mb-3 text-white">
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+                        Endereço de Entrega
+                    </h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Endereço</label>
+
+                        <input type="text"
+                               class="form-control bg-dark text-white border-secondary"
+                               name="endereco"
+                               placeholder="Rua, número e bairro"
+                               required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Cidade</label>
+
+                            <input type="text"
+                                   class="form-control bg-dark text-white border-secondary"
+                                   name="cidade"
+                                   required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Estado</label>
+
+                            <input type="text"
+                                   class="form-control bg-dark text-white border-secondary"
+                                   name="estado"
+                                   required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">CEP</label>
+
+                            <input type="text"
+                                   class="form-control bg-dark text-white border-secondary"
+                                   name="cep"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- PAGAMENTO -->
+                    <hr class="border-secondary my-4">
+
+                    <h5 class="mb-3" style="color: #00d4ff;">
+                        <i class="bi bi-wallet2 me-2"></i>
+                        Método de Pagamento
+                    </h5>
+
+                    <div class="mb-3">
+                        <select class="form-select bg-dark text-white border-secondary"
+                                name="pagamento"
+                                required>
+
+                            <option value="">Selecione</option>
+                            <option value="pix">PIX</option>
+                            <option value="cartao">Cartão de Crédito</option>
+                            <option value="boleto">Boleto Bancário</option>
+
+                        </select>
+                    </div>
+
+                    <!-- BOTÃO -->
+                    <button type="submit"
+                            class="btn fw-bold w-100 mt-4 p-3 shadow"
+                            style="background-color: #00d4ff; color: black; border-radius: 10px;">
+
+                        CONFIRMAR PEDIDO
+                        <i class="bi bi-check-circle-fill ms-2"></i>
+
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- RESUMO -->
+        <div class="col-lg-5">
+
+            <div class="p-4 text-white shadow position-sticky"
+                 style="
+                    background-color: #1a1d21;
+                    border-radius: 15px;
+                    border: 1px solid #333;
+                    top: 20px;
+                 ">
+
+                <h3 class="fw-bold mb-4" style="color: #00d4ff;">
+                    <i class="bi bi-receipt-cutoff me-2"></i>
+                    RESUMO DO PEDIDO
+                </h3>
+
+                <!-- PRODUTOS -->
+                {% for item in carrinho %}
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                     style="border-bottom: 1px solid #333;">
+
+                    <div>
+                        <h6 class="mb-1 text-white fw-bold">
+                            {{ item.produto.nome }}
+                        </h6>
+
+                        <small class="text-secondary d-block">
+                            Quantidade: {{ item.quantidade }}
+                        </small>
+
+                        <small class="text-secondary">
+                            Unitário: R$ {{ item.preco }}
+                        </small>
+                    </div>
+
+                    <span class="fw-bold"
+                          style="color: #00d4ff; font-size: 1rem;">
+
+                        R$ {{ item.total }}
+
+                    </span>
+                </div>
+                {% endfor %}
+
+                <!-- RESUMO FINAL -->
+                <div class="mt-4">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">
+                            Subtotal
+                        </span>
+
+                        <span>
+                            R$ {{ carrinho.get_total_preco }}
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">
+                            Frete
+                        </span>
+
+                        <span class="text-success">
+                            Grátis
+                        </span>
+                    </div>
+
+                    <hr class="border-secondary">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <h4 class="fw-bold mb-0">
+                            Total
+                        </h4>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #00d4ff;">
+
+                            R$ {{ carrinho.get_total_preco }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

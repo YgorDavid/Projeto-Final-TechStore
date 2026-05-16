@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container hero-content">
+        <h1>Bem-vindo a {{ nome_empresa }}!</h1>
+        <h2>O Futuro na Sua Mão!</h2>
+        <p>Descubra as últimas inovações em hardware e dispositivos inteligentes com ofertas exclusivas.</p>
+        <div class="hero-buttons">
+            <a href="#produtos" class="cta-button">Explorar Ofertas</a>
+            <a href="#faq" class="cta-button">FAQ</a>
+        </div>
+    </div>
+</section><br>
+
+<section class="container-texto-informativo">
+    <p>Na {{ nome_empresa }}, oferecemos uma ampla variedade de produtos tecnológicos para atender às suas
+        necessidades. Desde os mais recentes smartphones até notebooks de alta performance, temos tudo o que
+        você
+        precisa para se manter conectado e produtivo. Explore nossos produtos cuidadosamente selecionados e
+        descubra
+        as últimas tendências em tecnologia. Aproveite nossas ofertas exclusivas e faça suas compras com
+        segurança e conveniência. Estamos aqui para ajudar você a encontrar o dispositivo perfeito que se
+        encaixa
+        no seu estilo de vida e orçamento. Vem conferir nossas ofertas exclusivas e encontrar o parceiro
+        tecnológico ideal para o seu estilo. Conte com a gente para uma compra segura, prática e cheia de
+        inovação!</p>
+    <p class="agradecimento">Obrigado por escolher a <strong>{{ nome_empresa }}</strong> como sua loja de tecnologia de
+        confiança!</p>
+</section>
+
+<section id="sobre-nos">
+    <h2>Sobre a {{ nome_empresa }}:</h2><br>
+    <p>
+        Bem-vindo à <strong>{{ nome_empresa }}</strong>, o seu destino definitivo para o que há de mais moderno em
+        tecnologia!
+        Fundada em 2024, a {{ nome_empresa }} nasceu com o propósito de ser mais do que apenas uma loja de eletrônicos,
+        somos o seu destino definitivo para inovação. Nossa missão é transformar a maneira como você trabalha,
+        estuda e se diverte, facilitando o acesso a tecnologias de ponta que otimizam sua rotina. Nossa missão é
+        conectar pessoas à inovação, oferecendo produtos de alta performance
+        que transformam o dia a dia, seja para trabalho, lazer ou criação de conteúdo. A {{ nome_empresa }} é uma empresa
+        dedicada a fornecer produtos tecnológicos de alta qualidade a preços
+        competitivos. Nossa missão é tornar a tecnologia acessível a todos, oferecendo uma experiência de compra
+        excepcional e atendimento ao cliente de primeira classe. Estamos comprometidos em trazer as últimas
+        inovações do mercado para nossos clientes, garantindo satisfação e confiança em cada compra. Junte-se a
+        nós e descubra o futuro da tecnologia com a {{ nome_empresa }}!
+    </p><br>
+
+    <h3>Nossa Missão:</h3><br>
+    <p>
+        Democratizar o acesso às últimas novidades do mercado de hardware e periféricos,
+        garantindo qualidade e suporte especializado para entusiastas e profissionais. Acreditamos que a
+        tecnologia deve ser acessível a todos, e estamos aqui para tornar isso possível. Nosso compromisso é
+        manter você sempre à frente, trazendo as últimas tendências do mercado global diretamente para as suas
+        mãos. Queremos ser o parceiro que ajuda você a criar conteúdo, gerir negócios ou simplesmente aproveitar
+        momentos de lazer com o máximo de eficiência.
+    </p><br>
+
+    <h3>Porque escolher a {{ nome_empresa }}?</h3><br>
+    <ul>
+        <li><strong>Curadoria Especializada:</strong> Selecionamos apenas as melhores marcas.</li><br>
+        <li><strong>Suporte Técnico Real:</strong> Nossa equipe entende de hardware e está pronta para ajudar.
+        </li><br>
+        <li><strong>Entrega Rápida:</strong> Logística eficiente para todo o Brasil.</li><br>
+        <li><strong>Garantia Estendida:</strong> Confiança total na procedência dos nossos produtos.</li><br><br>
+        <p class="frase-final">Aproveite as ofertas para comprar tudo que quiser!
+        </p><br>
+        <h5 id="alerta"><strong>Ofertas válidas até o término de nossos estoques. Vendas sujeitas à análise e
+                confirmação de dados.</strong>
+        </h5>
+    </ul>
+</section>
+
+<section id="faq">
+    <h2>Perguntas Frequentes (FAQ)</h2><br>
+    <div class="accordion" id="accordionFAQ">
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Como funciona o envio e qual o prazo de entrega?
+                </button>
+            </h3>
+
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Entregamos para todo o Brasil com uma logística rápida e eficiente! O prazo e o valor do frete
+                    variam de acordo com o seu CEP e podem ser simulados diretamente no carrinho de compras antes de
+                    finalizar o pedido.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Os produtos possuem garantia?
+                </button>
+            </h3>
+
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Sim! Todos os produtos comercializados na <strong>{{ nome_empresa }}</strong> possuem garantia oficial do
+                    fabricante. Além disso, oferecemos a nossa Garantia Estendida exclusiva, reforçando a total
+                    confiança na procedência do nosso estoque.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Preciso de ajuda com um produto. Como aciono o Suporte Técnico?
+                </button>
+            </h3>
+
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Nosso grande diferencial é ter uma equipe técnica que entende de hardware de verdade. Você pode
+                    acionar nosso suporte técnico pelo chat online na sua área de cliente ou pelo telefone <strong>(21)
+                        91234-5678</strong>, de segunda a sexta, das 9h às 18h.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Quais são as formas de pagamento aceitas?
+                </button>
+            </h3>
+
+            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Aceitamos pagamentos via <strong>Pix (com 5% de desconto)</strong>, cartões de crédito em até 12x
+                    sem juros (dependendo do valor) e boleto bancário à vista.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    Posso devolver ou trocar um produto?
+                </button>
+            </h3>
+
+            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
+                <div class="accordion-body">
+                    Claro! Respeitamos o Código de Defesa do Consumidor. Você tem até <strong>7 dias corridos</strong>
+                    após o recebimento do produto para solicitar a devolução por arrependimento, desde que o item esteja
+                    na embalagem original e sem sinais de uso.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
