@@ -4,7 +4,7 @@
 
 <section class="hero">
     <div class="container hero-content">
-        <h1>Bem-vindo a {{ nome_empresa }}!</h1>
+        <h1>Bem-vindo a Tech<span style="color: #00d4ff;">Store</span>!</h1>
         <h2>O Futuro na Sua Mão!</h2>
         <p>Descubra as últimas inovações em hardware e dispositivos inteligentes com ofertas exclusivas.</p>
         <div class="hero-buttons">
@@ -30,6 +30,101 @@
         confiança!</p>
 </section>
 
+<h2 class="text-center mt-4 mb-5"
+    style="color: #00d4ff; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">
+    Principais Produtos Avaliados
+</h2>
+
+<div id="carouselAvaliacoes" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+
+        {% for avaliacao in avaliacoes %}
+        {% if avaliacao.nota == 5 %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="d-flex justify-content-center px-3">
+                <div class="card shadow-lg border-0"
+                    style="max-width: 800px; width: 100%; border-radius: 15px; background-color: #2b3035; color: white; overflow: hidden; border: 1px solid rgba(0, 212, 255, 0.15) !important;">
+
+                    <div class="row g-0">
+                        <div class="col-md-5 d-flex flex-column align-items-center justify-content-center p-4"
+                            style="background-color: rgba(0, 0, 0, 0.15);">
+                            {% if avaliacao.produto.imagem %}
+                            <img src="{{ avaliacao.produto.imagem.url }}" alt="{{ avaliacao.produto.nome }}"
+                                class="img-fluid rounded mb-3 shadow-sm"
+                                style="max-height: 180px; object-fit: contain;">
+                            {% else %}
+                            <div class="bg-secondary rounded mb-3 d-flex align-items-center justify-content-center"
+                                style="height: 150px; width: 100%;">
+                                <span class="text-white-50">Sem foto</span>
+                            </div>
+                            {% endif %}
+
+                            <h5 class="text-center mb-2 text-white fw-bold">{{ avaliacao.produto.nome }}</h5>
+
+                            <span class="badge mb-4" style="background-color: #00d4ff; color: #121212;">
+                                {{ avaliacao.produto.get_categoria_display|default:avaliacao.produto.categoria|title }}
+                            </span>
+
+                            <a href="{% url 'produtos' %}" class="btn btn-sm w-100 fw-bold"
+                                style="border: 2px solid #00d4ff; color: #00d4ff; text-transform: uppercase;">
+                                Ver Produtos
+                            </a>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div
+                                class="card-body p-4 p-md-5 d-flex flex-column justify-content-center h-100 text-center text-md-start">
+                                <div class="mb-3">
+                                    <h6 class="text-warning mb-2" style="font-size: 1.3rem;">⭐⭐⭐⭐⭐</h6>
+                                </div>
+                                <p class="card-text fs-5" style="font-style: italic; color: #e0e0e0; flex-grow: 1;">
+                                    "{{ avaliacao.comentario }}"
+                                </p>
+
+                                <div class="mt-4 pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <div
+                                        class="d-flex align-items-center justify-content-center justify-content-md-start">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold me-3 shadow"
+                                            style="width: 45px; height: 45px; background-color: #00d4ff; color: #121212; font-size: 1.2rem;">
+                                            {{ avaliacao.usuario.username|slice:":1"|upper }}
+                                        </div>
+                                        <div class="text-start">
+                                            <h6 class="mb-0 fw-bold" style="color: #00d4ff;">{{ avaliacao.usuario.username }}</h6>
+                                            <small>{{ avaliacao.data_postagem|date:"d/m/Y" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <div class="text-center py-5">
+            <p class="text-muted fs-5">Ainda não temos avaliações 5 estrelas para exibir.</p>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% if avaliacoes %}
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselAvaliacoes" data-bs-slide="prev"
+        style="width: 8%;">
+        <span class="carousel-control-prev-icon rounded-circle p-3 shadow" aria-hidden="true"
+            style="background-color: #00d4ff;"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselAvaliacoes" data-bs-slide="next"
+        style="width: 8%;">
+        <span class="carousel-control-next-icon rounded-circle p-3 shadow" aria-hidden="true"
+            style="background-color: #00d4ff;"></span>
+        <span class="visually-hidden">Próximo</span>
+    </button>
+    {% endif %}
+</div><br><br><br>
+
 <section id="sobre-nos">
     <h2>Sobre a {{ nome_empresa }}:</h2><br>
     <p>
@@ -39,7 +134,8 @@
         somos o seu destino definitivo para inovação. Nossa missão é transformar a maneira como você trabalha,
         estuda e se diverte, facilitando o acesso a tecnologias de ponta que otimizam sua rotina. Nossa missão é
         conectar pessoas à inovação, oferecendo produtos de alta performance
-        que transformam o dia a dia, seja para trabalho, lazer ou criação de conteúdo. A {{ nome_empresa }} é uma empresa
+        que transformam o dia a dia, seja para trabalho, lazer ou criação de conteúdo. A {{ nome_empresa }} é uma
+        empresa
         dedicada a fornecer produtos tecnológicos de alta qualidade a preços
         competitivos. Nossa missão é tornar a tecnologia acessível a todos, oferecendo uma experiência de compra
         excepcional e atendimento ao cliente de primeira classe. Estamos comprometidos em trazer as últimas
@@ -102,7 +198,8 @@
 
             <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
                 <div class="accordion-body">
-                    Sim! Todos os produtos comercializados na <strong>{{ nome_empresa }}</strong> possuem garantia oficial do
+                    Sim! Todos os produtos comercializados na <strong>{{ nome_empresa }}</strong> possuem garantia
+                    oficial do
                     fabricante. Além disso, oferecemos a nossa Garantia Estendida exclusiva, reforçando a total
                     confiança na procedência do nosso estoque.
                 </div>
@@ -120,8 +217,8 @@
             <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
                 <div class="accordion-body">
                     Nosso grande diferencial é ter uma equipe técnica que entende de hardware de verdade. Você pode
-                    acionar nosso suporte técnico pelo chat online na sua área de cliente ou pelo telefone <strong>(21)
-                        91234-5678</strong>, de segunda a sexta, das 9h às 18h.
+                    acionar nosso suporte técnico pelo chat online na sua área de atendimento ou pelo telefone <strong>(21)
+                        91234-5678</strong>, de segunda a sábado, das 8h às 20h, e domingos e feriados, das 9h às 18h. Estamos aqui para ajudar você a tirar o máximo proveito dos seus produtos!
                 </div>
             </div>
         </div>

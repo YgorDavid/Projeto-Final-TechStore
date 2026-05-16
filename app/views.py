@@ -9,29 +9,47 @@ from .models import *
 
 def home_view(request):
     produtos = Produto.objects.all()
+    
+    avaliacoes_top = Avaliacao.objects.filter(nota=5)
+    
     context = {
         'nome_empresa': 'TechStore',
-        'produtos': produtos
+        'produtos': produtos,
+        'avaliacoes': avaliacoes_top
     }
+    
     return render(request, 'home.html', context)
 
 @login_required
 def produtos_view(request):
     form = ProdutoForm()
     form_avaliacao = AvaliacaoForm()
-    
-    if request.method == 'POST' and 'adicionar_produto' in request.POST:
-        form = ProdutoForm(request.POST, request.FILES)
-        if form.is_valid():
-            produto = form.save(commit=False)
-            loja_do_usuario = request.user.lojas_que_gerencio.first()
-            if loja_do_usuario:
-                produto.loja = loja_do_usuario
-                produto.save()
+
+    if request.method == 'POST':
+        if 'adicionar_produto' in request.POST:
+            form = ProdutoForm(request.POST, request.FILES)
+            
+            if form.is_valid():
+                novo_produto = form.save(commit=False)
+                
+                loja_do_usuario = Loja.objects.filter(equipe=request.user).first()
+                
+                if not loja_do_usuario:
+                    loja_do_usuario = Loja.objects.create(
+                        nome_da_loja=f"Loja de {request.user.username}",
+                        descricao="Criada automaticamente pelo sistema ao adicionar o primeiro produto."
+                    )
+                    loja_do_usuario.equipe.add(request.user)
+                
+                novo_produto.loja = loja_do_usuario
+                novo_produto.save()
+                
+                messages.success(request, "Produto adicionado com sucesso!")
                 return redirect('produtos')
             else:
-                form.add_error(None, 'Você precisa ter uma loja para adicionar produtos.')
-    
+                print("ERROS DO FORMULÁRIO:", form.errors)
+                messages.error(request, "Erro ao adicionar produto. Verifique os dados.")
+
     if request.method == 'POST' and 'adicionar_avaliacao' in request.POST:
         form_avaliacao = AvaliacaoForm(request.POST)
         if form_avaliacao.is_valid():
@@ -116,17 +134,6 @@ def dashboard_view(request):
     }
     return render(request, 'dashboard.html', context)
 
-# def detalhe_produto_view(request, pk):
-#     produto = get_object_or_404(Produto, pk=pk)
-#     avaliacoes = produto.avaliacoes.all()
-    
-#     context = {
-#         'produto': produto,
-#         'avaliacoes': avaliacoes
-#     }
-    
-#     return render(request, 'detalhe_produto.html', context)
-
 @login_required
 def avaliar_produto(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
@@ -164,11 +171,26 @@ def cadastro_view(request):
         form = CadastroForm(request.POST)
         if form.is_valid():
             user = form.save()
+            
+            tipo_perfil = form.cleaned_data.get('tipo_pessoa')
+            nome_loja_digitado = form.cleaned_data.get('nome_da_loja')
+            
+            if tipo_perfil == 'PJ' and nome_loja_digitado:
+                nova_loja = Loja.objects.create(
+                    nome_da_loja=nome_loja_digitado,
+                    descricao=f"Loja de {user.username}"
+                )
+                nova_loja.equipe.add(user)
+            
             messages.success(request, f"Conta criada com sucesso para {user.username}! Faça o seu login.")
             return redirect('login')
         
         else:
-            messages.error(request, "Erro ao criar conta. Verifique se os dados estão corretos (Senhas iguais, CPF válido, etc).")
+            print("ERROS DE VALIDAÇÃO DO CADASTRO:", form.errors)
+            for campo, erros in form.errors.items():
+                for erro in erros:
+                    messages.error(request, f"Erro no campo {campo}: {erro}")
+            
             return render(request, 'cadastro.html', {'form': form})
         
     else:
@@ -181,3 +203,5 @@ def logout_view(request):
     messages.info(request, "Você saiu com sucesso.")
     return redirect('login')
 
+def atendimento_view(request):
+    return render(request, 'atendimento.html')

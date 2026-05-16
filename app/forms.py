@@ -9,6 +9,13 @@ class CadastroForm(UserCreationForm):
         choices=[('PF', 'Pessoa Física'), ('PJ', 'Pessoa Jurídica')],
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'id_tipo_pessoa'})
     )
+    
+    nome_da_loja = forms.CharField(
+        max_length=150, 
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome da sua Empresa/Loja', 'id': 'id_nome_da_loja'})
+    )
+    
     cpf_cnpj = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_cpf_cnpj'}))
     telefone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_telefone'}))
     cep = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_cep'}))
@@ -81,12 +88,18 @@ class PerfilUpdateForm(forms.ModelForm):
                 partes = self.instance.endereco.split(' - Nº ')
                 self.initial['endereco'] = partes[0]
                 self.initial['numero'] = partes[1]
-                        
+            
+
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'categoria', 'descricao', 'preco', 'preco_custo', 
-                  'estoque', 'imagem', 'especificacoes']
+        fields = ['categoria', 'nome', 'descricao', 'preco', 'preco_custo', 'estoque', 'imagem', 'especificacoes']
+        
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('usuario', None) 
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control bg-dark text-white border-secondary'})
 
 class AvaliacaoForm(forms.ModelForm):
     class Meta:
