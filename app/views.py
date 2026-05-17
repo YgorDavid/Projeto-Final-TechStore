@@ -82,40 +82,89 @@ def produtos_view(request):
             pass
 
     categorias_choices = getattr(Produto, 'CATEGORIA_CHOICES', [])
+    
+    favoritos_ids = []
+
+    if request.user.is_authenticated:
+        favoritos_ids = list(Favorito.objects.filter(usuario=request.user).values_list('produto_id',flat=True))
 
     context = {
-        'usuario': request.user.username,
-        'produtos': produtos,
-        'categorias_choices': categorias_choices,
-        'categoria_selecionada': categoria_selecionada,
-        'form': form,
-        'form_avaliacao': form_avaliacao,
-        'q': q,
-    }
+    'usuario': request.user.username,
+    'produtos': produtos,
+    'categorias_choices': categorias_choices,
+    'categoria_selecionada': categoria_selecionada,
+    'form': form,
+    'form_avaliacao': form_avaliacao,
+    'q': q,
+    'favoritos_ids': favoritos_ids,
+}
     
     return render(request, 'produtos.html', context)
 
+def detalhe_produto(request, produto_id):
+
+    produto = get_object_or_404(
+        Produto,
+        id=produto_id
+    )
+
+    return render(
+        request,
+        'detalhe_produto.html',
+        {
+            'produto': produto
+        }
+    )
+
+@login_required
+def favoritar_produto(request, produto_id):
+
+    produto = get_object_or_404(
+        Produto,
+        id=produto_id
+    )
+
+    favorito = Favorito.objects.filter(
+        usuario=request.user,
+        produto=produto
+    )
+
+    if favorito.exists():
+        favorito.delete()
+
+    else:
+        Favorito.objects.create(
+            usuario=request.user,
+            produto=produto
+        )
+
+    return redirect('produtos')
+
+@login_required
 def lista_favoritos(request):
     favoritos = Favorito.objects.filter(usuario=request.user).select_related('produto')
-    produtos = [fav.produto for fav in favoritos] 
-    
-    return render(request, 'favoritos.html', {'produtos': produtos})
 
+    return render(request,'favoritos.html',{'favoritos': favoritos})
+
+@login_required
 def alternar_favorito(request, produto_id):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'login_required'}, status=401)
-        
-    produto = get_object_or_404(Produto, id=produto_id)
-    favorito_existente = Favorito.objects.filter(usuario=request.user, produto=produto)
+    produto = get_object_or_404(Produto,id=produto_id)
+
+    favorito_existente = Favorito.objects.filter(usuario=request.user,produto=produto)
 
     if favorito_existente.exists():
         favorito_existente.delete()
         favoritado = False
+
     else:
-        Favorito.objects.create(usuario=request.user, produto=produto)
+        Favorito.objects.create(
+            usuario=request.user,
+            produto=produto
+        )
+
         favoritado = True
 
-    return JsonResponse({'status': 'success', 'favoritado': favoritado})
+    return JsonResponse({'status': 'success','favoritado': favoritado})
 
 def detalhe_carrinho(request):
     """Exibe os itens atualmente presentes no carrinho."""

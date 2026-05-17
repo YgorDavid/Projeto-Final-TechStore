@@ -488,6 +488,27 @@ svg {
     stroke: var(--color-text);
 }
 
+.favorito-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
+    transition: .2s;
+}
+
+.favorito-btn:hover {
+    transform: scale(1.1);
+}
+
 /* =========================================
    ACCORDION / FAQ
 ========================================= */

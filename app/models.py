@@ -120,7 +120,7 @@ class Pedido(models.Model):
     comprador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pedidos')
     data_pedido = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total = models.DecimalField(max_digits=10, decimal_places=2,)
     
     def __str__(self):
         return f"Pedido #{self.id} - {self.comprador.username}"
@@ -142,3 +142,4 @@ class Favorito(models.Model):
 
     class Meta:
         unique_together = ('usuario', 'produto')
+        verbose_name_plural = "Favoritos"
