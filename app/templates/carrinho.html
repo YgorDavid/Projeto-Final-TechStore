@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="text-white fw-bold mb-4"><i class="bi bi-cart4 me-2" style="color: #00d4ff;"></i>MEU CARRINHO
+        <br><br>
+        <p class="text-white-50 fs-6 fw-normal">Revise seus itens antes de finalizar a compra.</p>
+    </h3><br>
+
+    <div class="p-4 mb-5 shadow-lg" style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333;">
+
+        {% if carrinho %}
+        <div class="text-center py-2 mb-4 fw-bolder"
+            style="background-color: #00d4ff; border-radius: 8px; color: #000; letter-spacing: 1px; font-size: 0.9rem;">
+            <i class="bi bi-bag-check-fill me-2"></i> ITENS SELECIONADOS
+        </div>
+
+        <div class="table-responsive mb-4">
+            <table class="table table-dark table-borderless align-middle mb-0" style="background-color: transparent;">
+                <thead style="border-bottom: 2px solid #00d4ff;">
+                    <tr class="text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">
+                        <th class="py-3 text-white-50">Produto</th>
+                        <th class="py-3 text-center text-white-50">Quantidade</th>
+                        <th class="py-3 text-center text-white-50">Preço Unitário</th>
+                        <th class="py-3 text-center text-white-50">Subtotal</th>
+                        <th class="py-3 text-center text-white-50">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrinho %}
+                    <tr style="border-bottom: 1px solid #30363d;">
+                        <td class="py-3">
+                            <span class="fw-bold text-white fs-5">{{ item.produto.nome }}</span>
+                        </td>
+
+                        <td class="py-3 text-center">
+                            <div class="d-flex align-items-center justify-content-center">
+
+                                <form action="{% url 'carrinho_adicionar' item.produto.id %}" method="post"
+                                    class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantidade" value="{{ item.quantidade|add:-1 }}">
+                                    <input type="hidden" name="override" value="True">
+
+                                    {% if item.quantidade == 1 %}
+                                    <button type="button"
+                                        class="btn btn-sm border-0 fw-bold d-flex align-items-center justify-content-center"
+                                        style="background-color: #21262d; color: #6c757d; border-radius: 6px; width: 28px; height: 28px; font-size: 1rem; opacity: 0.4;"
+                                        disabled>
+                                        -
+                                    </button>
+                                    {% else %}
+                                    <button type="submit"
+                                        class="btn btn-sm border-0 fw-bold d-flex align-items-center justify-content-center btn-diminuir"
+                                        style="background-color: #21262d; color: #00d4ff; border-radius: 6px; width: 28px; height: 28px; font-size: 1rem;">
+                                        -
+                                    </button>
+                                    {% endif %}
+                                </form>
+
+                                <span class="mx-3 fw-bold text-white fs-5" style="min-width: 20px;">
+                                    {{ item.quantidade }}
+                                </span>
+
+                                <form action="{% url 'carrinho_adicionar' item.produto.id %}" method="post"
+                                    class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantidade" value="1">
+                                    <input type="hidden" name="override" value="False">
+
+                                    {% if item.quantidade >= item.produto.estoque %}
+                                    <button type="button"
+                                        class="btn btn-sm border-0 fw-bold d-flex align-items-center justify-content-center"
+                                        style="background-color: #21262d; color: #6c757d; border-radius: 6px; width: 28px; height: 28px; font-size: 1rem; opacity: 0.4;"
+                                        title="Limite máximo de estoque atingido" disabled>
+                                        +
+                                    </button>
+                                    {% else %}
+                                    <button type="submit"
+                                        class="btn btn-sm border-0 fw-bold d-flex align-items-center justify-content-center"
+                                        style="background-color: #21262d; color: #00d4ff; border-radius: 6px; width: 28px; height: 28px; font-size: 1rem;">
+                                        +
+                                    </button>
+                                    {% endif %}
+                                </form>
+
+                            </div>
+                        </td>
+
+                        <td class="py-3 text-center text-white-50">R$ {{ item.preco }}</td>
+
+                        <td class="py-3 text-center fw-bold" style="color: #00d4ff; font-size: 1.1rem;">
+                            R$ {{ item.total|floatformat:2 }}
+                        </td>
+
+                        <td class="py-3 text-center">
+                            <a href="{% url 'carrinho_remover' item.produto.id %}"
+                                class="btn btn-sm btn-outline-danger shadow-sm"
+                                style="border-radius: 8px; padding: 0.4rem 0.8rem;">
+                                <i class="bi bi-trash3-fill"></i> Remover
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <a href="{% url 'finalizar_compra' %}"
+                class="btn fw-bold w-100 w-md-auto d-inline-flex align-items-center justify-content-center shadow"
+                style="background-color: #00d4ff; color: black; border-radius: 10px; height: 50px; letter-spacing: 1px; min-width: 280px; text-decoration: none;">
+                FINALIZAR COMPRA <i class="bi bi-arrow-right-circle-fill ms-2"></i>
+            </a>
+        </div>
+
+        {% else %}
+        <div class="text-center py-5"
+            style="background-color: #21262d; border-radius: 12px; border: 1px dashed #30363d;">
+            <i class="bi bi-cart-x mb-3 d-block" style="font-size: 4rem; color: #30363d;"></i>
+            <h4 class="text-white fw-bold mb-2">Seu carrinho está vazio</h4>
+            <p class="text-white-50 mb-4">Parece que você ainda não adicionou nenhum produto.</p>
+            <a href="{% url 'produtos' %}" class="btn fw-bold px-4 shadow"
+                style="background-color: #00d4ff; color: black; border-radius: 10px; height: 45px; display: inline-flex; align-items: center;">
+                <i class="bi bi-search me-2"></i> EXPLORAR PRODUTOS
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

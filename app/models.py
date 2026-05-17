@@ -104,16 +104,30 @@ class Avaliacao(models.Model):
 class Pedido(models.Model):
     comprador = models.ForeignKey(User, on_delete=models.CASCADE)
     data_pedido = models.DateTimeField(auto_now_add=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    total = models.DecimalField(max_digits=10, decimal_places=2,)
+    
+    def __str__(self):
+        return f"Pedido #{self.id} - {self.comprador.username}"
 
     def __str__(self):
         return f"Pedido {self.id} - {self.comprador.username}"
 
 class ItemPedido(models.Model):
+    """Model essencial para ligar os produtos comprados ao pedido principal."""
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
     quantidade = models.PositiveIntegerField(default=1)
-    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"{self.quantidade}x {self.produto.nome}"
+        return f"{self.quantidade}x {self.produto.nome} (Pedido #{self.pedido.id})"
+
+class Favorito(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favoritos')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    data_adicionado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'produto')
+        verbose_name_plural = "Favoritos"
