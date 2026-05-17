@@ -13,6 +13,7 @@
                 + ADICIONAR PRODUTO
             </button>
             {% endif %}
+
             <button class="btn btn-outline-light fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalAvaliacao"
                 style="border-radius: 10px; font-size: 0.85rem; border-color: #00d4ff; color: #00d4ff;">
                 AVALIAR
@@ -21,7 +22,6 @@
     </div>
 
     <div class="p-4 mb-4 shadow-lg" style="background-color: #2b2d33; border-radius: 12px; border: 1px solid #383a40;">
-
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="text-white fw-bold" style="font-size: 1.05rem; letter-spacing: 0.5px;">
                 <i class="bi bi-funnel me-2"></i>Filtrar por Categoria
@@ -32,7 +32,6 @@
         </div>
 
         <form method="GET" action="{% url 'produtos' %}" id="filterForm">
-
             <div class="d-flex flex-wrap gap-2 mb-4">
                 <button type="button" class="category-btn {% if not categoria_selecionada %}active{% endif %}"
                     onclick="selectCategory('')">
@@ -140,7 +139,6 @@
                         </div>
                     </div>
                     {% endif %}
-
                 </div>
 
                 {% if produto.estoque > 0 %}
@@ -161,6 +159,59 @@
     {% endif %}
 
 </div>
+
+<div class="modal fade" id="modalProduto" tabindex="-1" aria-labelledby="modalProdutoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-white"
+            style="background-color: #2b2d33; border: 1px solid #383a40; border-radius: 15px;">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title fw-bold text-white" id="modalProdutoLabel"><i class="bi bi-box-seam me-2"
+                        style="color: #00d4ff;"></i>Cadastrar Novo Produto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-shadow="none" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form method="POST" action="" enctype="multipart/form-data" class="labels-white">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {{ form_produto.as_p }}
+                </div>
+                <div class="modal-footer border-top border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal"
+                        style="border-radius: 8px;">Cancelar</button>
+                    <button type="submit" name="submit_produto" class="btn fw-bold"
+                        style="background-color: #00d4ff; color: black; border-radius: 8px;">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAvaliacao" tabindex="-1" aria-labelledby="modalAvaliacaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-white"
+            style="background-color: #2b2d33; border: 1px solid #383a40; border-radius: 15px;">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title fw-bold text-white" id="modalAvaliacaoLabel"><i class="bi bi-star-fill me-2"
+                        style="color: #ffd43b;"></i>Enviar Avaliação</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form method="POST" action="" class="labels-white">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {{ form_avaliacao.as_p }}
+                </div>
+                <div class="modal-footer border-top border-secondary border-opacity-25">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal"
+                        style="border-radius: 8px;">Cancelar</button>
+                    <button type="submit" name="submit_avaliacao" class="btn fw-bold"
+                        style="background-color: #ffd43b; color: black; border-radius: 8px;">Postar Avaliação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% else %}
 <div class="container text-center py-5">
     <h3 class="text-white">Acesso restrito. Faça login para continuar.</h3>
@@ -177,7 +228,7 @@
 </script>
 
 <style>
-    /* Estilização e Efeitos do Coração Alinhado */
+    /* Estilos do Coração */
     .wrapper-coracao {
         display: inline-block;
     }
@@ -202,7 +253,6 @@
         background-color: rgba(255, 75, 75, 0.05);
     }
 
-    /* Modificadores de Estado para simulação visual */
     .check-coracao-escondido:checked+.btn-card-favorito {
         color: #ff4b4b;
         background-color: rgba(255, 75, 75, 0.1);
@@ -211,10 +261,9 @@
 
     .check-coracao-escondido:checked+.btn-card-favorito i::before {
         content: "\f415";
-        /* Preenche o coração (heart-fill) do Bootstrap Icons */
     }
 
-    /* Demais Estilos Originais */
+    /* Estilos de Categorias e Limpar */
     .category-btn {
         background-color: #1f2124;
         color: #a0a5b0;
@@ -256,16 +305,23 @@
 
     .labels-white p {
         color: white !important;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
     }
 
     .labels-white select,
-    .labels-white textarea {
-        background-color: #2b3035 !important;
+    .labels-white textarea,
+    .labels-white input[type="text"],
+    .labels-white input[type="number"],
+    .labels-white input[type="file"] {
+        background-color: #1f2124 !important;
         color: white !important;
-        border: 1px solid #444 !important;
+        border: 1px solid #383a40 !important;
         border-radius: 8px;
-        padding: 8px;
+        padding: 10px;
         width: 100%;
+        margin-top: 4px;
     }
 </style>
 
