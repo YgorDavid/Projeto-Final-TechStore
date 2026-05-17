@@ -2,93 +2,58 @@ import os
 import django
 import matplotlib.pyplot as plt
 
-# --- CONFIGURAÇÃO DO AMBIENTE DJANGO ---
+# 1. Configuração do ambiente Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from app.models import Produto 
+from app.models import Loja
 
-# MÓDULO DE INTELIGÊNCIA LOGÍSTICA E FINANCEIRA
+def gerar_dashboards_regionais():
+    lojas = Loja.objects.all()
+    
+    nomes_lojas = []
+    lucros_potenciais = []
+    investimento_estoque = []
 
-def identificar_regiao_por_cep(cep):
-    """Retorna o Estado baseado no primeiro dígito do CEP."""
-    if not cep:
-        return "Outras Regiões"
-    cep_limpo = str(cep).replace("-", "").strip()
-    primeiro_digito = cep_limpo[0]
-    
-    if primeiro_digito in ['0', '1']:
-        return "São Paulo"
-    elif primeiro_digito == '2':
-        return "Rio de Janeiro"
-    elif primeiro_digito == '3':
-        return "Minas Gerais"
-    else:
-        return "Outras Regiões"
+    print("=" * 50)
+    print("      TECHSTORE BI - RELATÓRIO CONSOLIDADO")
+    print("=" * 50)
 
-# --- ÁREA DE PROCESSAMENTO (CONEXÃO COM O BANCO REAL) ---
-if __name__ == "__main__":
-    print("--- CONECTANDO AO BANCO DE DADOS DJANGO ---")
-    
-    # Buscamos todos os produtos cadastrados
-    produtos_reais = Produto.objects.all()
-    
-    if not produtos_reais.exists():
-        print("Nenhum produto cadastrado no banco de dados ainda!")
-        exit()
+    for loja in lojas:
+        lucro_total = 0
+        estoque_total = 0
         
-    print("--- AGRUPANDO LUCRO POTENCIAL POR REGIÃO ---")
-    lucro_por_regiao = {}
-    
-    for produto in produtos_reais:
-        preco_venda = float(produto.preco)
-        preco_custo = float(produto.preco_custo)
-        quantidade_estoque = int(produto.estoque)
+        # Percorre os produtos vinculados a esta loja
+        produtos = loja.produtos.all()
+        for p in produtos:
+            # Lucro total = (Lucro Unitário * Quantidade em Estoque)
+            lucro_total += float(p.calcular_margem_abs()) * p.estoque
+            estoque_total += float(p.valor_total_estoque())
         
-        valor_frete = 15.00
-        lucro_unitario = preco_venda - preco_custo - valor_frete
-        lucro_total_produto = lucro_unitario * quantidade_estoque
-        
-        # INSTÂNCIA DINÂMICA: Puxa o CEP da loja vinculada ao produto
-        try:
-            cep_loja = produto.loja.cep  # Acessa o CEP através do relacionamento
-            regiao = identificar_regiao_por_cep(cep_loja)
-        except AttributeError:
-            # Caso o produto não tenha loja vinculada, evita que o script quebre
-            regiao = "São Paulo"
-        
-        if regiao in lucro_por_regiao:
-            lucro_por_regiao[regiao] += lucro_total_produto
-        else:
-            lucro_por_regiao[regiao] = lucro_total_produto
+        nomes_lojas.append(loja.nome_da_loja)
+        lucros_potenciais.append(lucro_total)
+        investimento_estoque.append(estoque_total)
 
-    # Mostra o resultado em texto no terminal
-    for regiao, total_lucro in lucro_por_regiao.items():
-        print(f"Região: {regiao:15} | Lucro Potencial em Estoque: R$ {total_lucro:.2f}")
+        print(f"FILIAL: {loja.nome_da_loja.ljust(15)} | LUCRO: R$ {lucro_total:>9.2f}")
 
-    print("\n--- GERANDO COMPONENTE VISUAL REAL ---")
-    print("Abrindo o painel de Dashboards... Feche a janela do gráfico para encerrar.")
+    # --- CRIAÇÃO DOS GRÁFICOS ---
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    fig.suptitle('Performance Regional: Rio de Janeiro vs São Paulo', fontsize=16)
 
-    # --- MONTAGEM DO MATPLOTLIB ---
-    estados = list(lucro_por_regiao.keys()) 
-    lucros = list(lucro_por_regiao.values()) 
-    
-    plt.figure(figsize=(8, 5))
-    
-    # Cores personalizadas: Azul escuro para a primeira barra, Vermelho para a segunda (padrão elegante)
-    cores = ['navy', 'crimson', 'darkgreen', 'orange'][:len(estados)]
-    
-    plt.bar(estados, lucros, color=cores, edgecolor='black', width=0.4)
-    
-    plt.title("KPI Financeiro: Lucro Real do Estoque por Região", fontsize=14, fontweight='bold')
-    plt.xlabel("Regiões (Faturamento por Filial)", fontsize=12)
-    plt.ylabel("Lucro Total em Estoque (R$)", fontsize=12)
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    
-    # Adiciona os valores no topo de cada barra para dar o toque premium final
-    for i, valor in enumerate(lucros):
-        plt.text(i, valor + (max(lucros) * 0.01), f"R$ {valor:,.2f}", ha='center', va='bottom', fontweight='bold')
-        
+    # Gráfico 1: Lucro Potencial (Barras)
+    cores = ['#003366', '#CC0000'] # Azul para RJ, Vermelho para SP
+    ax1.bar(nomes_lojas, lucros_potenciais, color=cores)
+    ax1.set_title('Lucro Potencial (Venda Total)')
+    ax1.set_ylabel('R$')
+
+    # Gráfico 2: Investimento em Estoque (Pizza)
+    ax2.pie(investimento_estoque, labels=nomes_lojas, autopct='%1.1f%%', colors=cores, shadow=True)
+    ax2.set_title('Distribuição de Investimento (% do Capital)')
+
     plt.tight_layout()
+    print("\n[INFO] Exibindo dashboards... Feche a janela para continuar.")
     plt.show()
+
+if __name__ == "__main__":
+    gerar_dashboards_regionais()
     

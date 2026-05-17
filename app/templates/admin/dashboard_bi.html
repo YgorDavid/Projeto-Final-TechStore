@@ -1,0 +1,60 @@
+{% extends 'admin/base_bi.html' %}
+
+{% block modulo_nome %}Comercial{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-secondary text-white p-4" style="border-radius: 15px;">
+            <h6 class="text-muted small text-uppercase">Lucro Total em Estoque</h6>
+            <h2 class="accent-color">R$ {{ total_geral|floatformat:2 }}</h2>
+            <p class="mb-0 small text-white-50">Baseado em {{ total_lojas }} unidades</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7 mb-4">
+        <div class="card bg-dark border-secondary p-4 text-center" style="border-radius: 15px; min-height: 450px;">
+            <h5 class="text-start mb-4" style="color: #58a6ff;">📊 Lucro por Regional</h5>
+            {% if grafico %}<img src="data:image/png;base64,{{ grafico }}" class="img-fluid rounded shadow">{% endif %}
+        </div>
+    </div>
+    <div class="col-md-5 mb-4">
+        <div class="card bg-dark border-secondary p-4 text-center" style="border-radius: 15px; min-height: 450px;">
+            <h5 class="text-start mb-4" style="color: #51cf66;">🍕 Mix por Categoria</h5>
+            {% if grafico_pizza %}<img src="data:image/png;base64,{{ grafico_pizza }}" class="img-fluid rounded shadow">{% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-dark border-secondary p-4" style="border-radius: 15px;">
+            <h5 class="mb-4" style="color: #58a6ff;">🏆 Top 5 Produtos (Maior Margem)</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #58a6ff;">
+                            <th>Produto</th>
+                            <th>Custo</th>
+                            <th>Venda</th>
+                            <th class="text-end">Margem Absoluta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in produtos_lucrativos %}
+                        <tr>
+                            <td>{{ p.nome }}</td>
+                            <td>R$ {{ p.preco_custo|floatformat:2 }}</td>
+                            <td>R$ {{ p.preco|floatformat:2 }}</td>
+                            <td class="text-end" style="font-weight: bold; color: #51cf66;">R$ {{ p.calcular_margem_abs|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

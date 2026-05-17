@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if user.is_staff %}
+        <div style="background: #1a1a1a; border-bottom: 2px solid #198754; padding: 10px; text-align: center;">
+            <a href="{% url 'dashboard_bi' %}" style="color: #198754; text-decoration: none; font-weight: bold;">
+                🛡️ ACESSAR DASHBOARD DE VENDAS (BI)
+            </a>
+        </div>
+    {% endif %}
 
 <section class="hero">
     <div class="container hero-content">
