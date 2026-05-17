@@ -1,136 +1,160 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<style>
-    /* DESIGN DE ALTO CONTRASTE E ELEGÂNCIA */
-    .card {
-        border: 2px solid #0d6efd !important;
-    }
-
-    .card-body {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-    }
-
-    label,
-    .form-label {
-        color: #212529 !important;
-        font-weight: 700 !important;
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .form-control,
-    select {
-        border: 2px solid #adb5bd !important;
-        color: #000000 !important;
-        background-color: #f8f9fa !important;
-        height: 45px;
-    }
-
-    h5.border-bottom {
-        color: #0d6efd !important;
-        border-bottom: 2px solid #0d6efd !important;
-        padding-top: 20px;
-        text-transform: uppercase;
-        font-size: 1.1rem;
-    }
-</style>
-
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h4 class="mb-0 fw-bold">PORTAL DO CLIENTE</h4>
-                    <p class="mb-0 small">Sistema de Cadastro TechStore</p>
+            <div class="card shadow-lg border-0"
+                style="background-color: #1a1f26; color: #ffffff; border: 1px solid #00d4ff !important; border-radius: 15px;">
+
+                <div class="card-header text-center py-4 border-0"
+                    style="background-color: rgba(0, 212, 255, 0.05); border-radius: 15px 15px 0 0;">
+                    <h4 class="mb-0 fw-bold" style="color: #00d4ff;">PORTAL DO CLIENTE</h4>
+                    <p class="mb-0 small text-secondary">Sistema de Cadastro TechStore</p>
                 </div>
 
-                <div class="card-body p-4">
-                    {% if not mostrar_bem_vindo %}
-                    <form method="POST" id="formCadastro" autocomplete="off">
+                <div class="card-body p-4 p-lg-5">
+
+                    {% if mostrar_bem_vindo %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-check-circle-fill" style="font-size: 5rem; color: #00d4ff;"></i>
+                        <h2 class="fw-bold mt-4" style="color: #00d4ff;">🎉 Cadastro Concluído!</h2>
+                        <p class="lead text-secondary">Bem-vindo à TechStore.</p>
+                        <a href="{% url 'login' %}" class="btn btn-lg mt-3 px-5 shadow fw-bold"
+                            style="background-color: #00d4ff; color: #000;">Acessar Portal</a>
+                    </div>
+                    {% else %}
+                    <form method="POST" id="formCadastro" autocomplete="off" novalidate>
                         {% csrf_token %}
 
-                        <h5 class="fw-bold mb-3">1. Credenciais de Acesso</h5>
-                        <div class="row">
-                            <!-- Tradução Manual dos Campos de Identidade -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nome de Usuário</label>
-                                {{ form.username }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">E-mail Corporativo/Pessoal</label>
-                                {{ form.email }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label>Crie uma Senha</label>
-                                {{ form.password1 }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label>Confirme a Senha</label>
-                                {{ form.password2 }}
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Tipo de Cadastro</label>
-                                {{ form.tipo_pessoa }}
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label" id="label_doc">CPF (11 números)</label>
-                                {{ form.cpf_cnpj }}
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Celular / WhatsApp</label>
-                                {{ form.telefone }}
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-4 section-title">
+                                <i class="bi bi-person-lines-fill me-2"></i>Credenciais de Acesso
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label label-custom">Nome de Usuário</label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block mt-1 error-msg">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.username.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label label-custom">E-mail</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block mt-1 error-msg">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.email.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label label-custom">Senha</label>
+                                    {{ form.password1 }}
+                                    <div class="form-text small mt-1" style="color: #8a94a6; font-size: 0.75rem;">
+                                        <i class="bi bi-info-circle me-1" style="color: #00d4ff;"></i>Mínimo de 8
+                                        caracteres, incluindo letra maiúscula e minúscula.
+                                    </div>
+                                    {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block mt-1 error-msg">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.password1.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label label-custom">Confirmar Senha</label>
+                                    {{ form.password2 }}
+                                    {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block mt-1 error-msg">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.password2.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label label-custom">Tipo de Cadastro</label>
+                                    {{ form.tipo_pessoa }}
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label label-custom" id="label_doc">Documento</label>
+                                    {{ form.cpf_cnpj }}
+                                    {% if form.cpf_cnpj.errors %}
+                                    <div class="invalid-feedback d-block mt-1 error-msg">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.cpf_cnpj.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <label class="form-label label-custom">Celular / WhatsApp</label>
+                                    {{ form.telefone }}
+                                    {% if form.telefone.errors %}
+                                    <div class="invalid-feedback d-block mt-1 error-msg">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.telefone.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
 
-                        <h5 class="fw-bold mt-4 mb-3">2. Logística e Entrega</h5>
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">CEP</label>
-                                <input type="text" name="cep" id="id_cep" class="form-control" placeholder="00000-000">
-                            </div>
-                            <div class="col-md-7 mb-3">
-                                <label class="form-label">Logradouro (Rua/Av)</label>
-                                <input type="text" name="logradouro" id="id_logradouro" class="form-control">
-                            </div>
-                            <div class="col-md-2 mb-3">
-                                <label class="form-label">Nº</label>
-                                <input type="text" name="numero" id="id_numero" class="form-control">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Bairro</label>
-                                <input type="text" name="bairro" id="id_bairro" class="form-control">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Cidade</label>
-                                <input type="text" name="cidade" id="id_cidade" class="form-control" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Estado (UF)</label>
-                                <input type="text" name="estado" id="id_estado" class="form-control" readonly>
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-4 section-title">
+                                <i class="bi bi-box-seam me-2"></i>Logística e Entrega
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label label-custom">CEP</label>
+                                    <input type="text" name="cep" id="id_cep" class="form-control form-control-dark">
+                                </div>
+                                <div class="col-md-7 mb-3">
+                                    <label class="form-label label-custom">Logradouro (Rua/Av)</label>
+                                    <input type="text" name="logradouro" id="id_logradouro"
+                                        class="form-control form-control-dark">
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label class="form-label label-custom">Nº</label>
+                                    <input type="text" name="numero" id="id_numero"
+                                        class="form-control form-control-dark">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label label-custom">Bairro</label>
+                                    <input type="text" name="bairro" id="id_bairro"
+                                        class="form-control form-control-dark">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label label-custom">Cidade</label>
+                                    <input type="text" name="cidade" id="id_cidade"
+                                        class="form-control form-control-dark" readonly>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label label-custom">Estado (UF)</label>
+                                    <input type="text" name="estado" id="id_estado"
+                                        class="form-control form-control-dark" readonly>
+                                </div>
                             </div>
                         </div>
 
                         <div class="text-center mt-5">
-                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow fw-bold py-3">
-                                CONFIRMAR CADASTRO PROFISSIONAL
+                            <button type="submit" id="btnSubmit" class="btn btn-lg w-100 shadow fw-bold py-3"
+                                style="background-color: #00d4ff; color: #000; border: none; border-radius: 10px;">
+                                <span id="btnText">CONFIRMAR CADASTRO</span>
+                                <div id="btnSpinner" class="spinner-border spinner-border-sm d-none ms-2" role="status">
+                                </div>
                             </button>
                         </div>
                     </form>
-                    {% else %}
-                    <div class="text-center py-5">
-                        <h2 class="text-success fw-bold">🎉 Cadastro Concluído!</h2>
-                        <p class="lead">Bem-vindo à TechStore. Seu perfil está ativo.</p>
-                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-3 px-5 shadow">Acessar Portal</a>
-                    </div>
                     {% endif %}
                 </div>
             </div>
-            <div class="card-footer bg-white border-0 text-center pb-4">
-                <p class="text-muted mb-0">Já é nosso cliente? <a href="{% url 'login' %}"
-                        class="text-primary fw-bold text-decoration-none">Faça login</a></p>
+
+            {% if not mostrar_bem_vindo %}
+            <div class="text-center mt-4">
+                <p class="text-secondary">Já é nosso cliente? <a href="{% url 'login' %}"
+                        class="text-decoration-none fw-bold" style="color: #00d4ff;">Faça login</a></p>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -140,10 +164,13 @@
 
 <script>
     $(document).ready(function () {
-        // Máscara Elegante de CEP
+        $('input:not([type="hidden"])').addClass('form-control form-control-dark');
+        $('select').addClass('form-select form-select-dark');
+
+        $('.error-msg').siblings('input, select').addClass('is-invalid');
+
         $('#id_cep').mask('00000-000');
 
-        // Máscara Dinâmica de Telefone
         var behavior = function (val) {
             return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
         },
@@ -154,29 +181,23 @@
             };
         $('#id_telefone').mask(behavior, optionsTel);
 
-        // MÁSCARAS ELEGANTES (CPF com pontos e traço | CNPJ com pontos, barra e traço)
         function aplicarMascarasIdentificacao() {
             var tipo = $('#id_tipo_pessoa').val();
             var campoDoc = $('#id_cpf_cnpj');
             var labelDoc = $('#label_doc');
 
-            campoDoc.val(''); // Limpa para evitar erros na troca
-
-            if (tipo === 'PF' || tipo === '' || tipo === undefined) {
+            if (tipo === 'PF' || tipo === '') {
                 campoDoc.mask('000.000.000-00');
-                labelDoc.text('CPF (11 números sugeridos)');
-                campoDoc.attr('placeholder', '000.000.000-00');
+                labelDoc.text('CPF (11 NÚMEROS)');
             } else {
                 campoDoc.mask('00.000.000/0000-00');
-                labelDoc.text('CNPJ (14 números com / e -)');
-                campoDoc.attr('placeholder', '00.000.000/0000-00');
+                labelDoc.text('CNPJ (14 NÚMEROS)');
             }
         }
 
         $('#id_tipo_pessoa').change(aplicarMascarasIdentificacao);
-        aplicarMascarasIdentificacao(); // Inicia na carga da página
+        aplicarMascarasIdentificacao();
 
-        // ViaCEP Inteligente
         $('#id_cep').blur(function () {
             var cep = $(this).val().replace(/\D/g, '');
             if (cep != "") {
@@ -191,6 +212,49 @@
                 });
             }
         });
+
+        $('#formCadastro').on('submit', function () {
+            $('#btnSubmit').prop('disabled', true);
+            $('#btnText').text('PROCESSANDO...');
+            $('#btnSpinner').removeClass('d-none');
+        });
     });
 </script>
+
+<div id="div_loja" style="display: none;">
+    <label class="text-white">NOME DA LOJA (Obrigatório para PJ)</label>
+    {{ form.nome_da_loja }}
+</div>
+
+<script>
+    const tipoPessoaSelect = document.getElementById('id_tipo_pessoa');
+    const divLoja = document.getElementById('div_loja');
+
+    tipoPessoaSelect.addEventListener('change', function () {
+        if (this.value === 'PJ') {
+            divLoja.style.display = 'block';
+        } else {
+            divLoja.style.display = 'none';
+        }
+    });
+</script>
+
+<style>
+    .form-control-dark,
+    .form-select-dark {
+        background-color: #232a33 !important;
+        border: 1px solid #333d4a !important;
+        color: #fff !important;
+    }
+
+    .form-control-dark:focus,
+    .form-select-dark:focus {
+        border-color: #00d4ff !important;
+        box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25) !important;
+    }
+
+    .form-select-dark {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300d4ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    }
+</style>
 {% endblock %}

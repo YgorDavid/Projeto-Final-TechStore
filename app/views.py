@@ -48,6 +48,7 @@ def home_view(request):
     context = {'nome_empresa': 'TechStore'}
     return render(request, 'home.html', context)
 
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -58,6 +59,7 @@ def login_view(request):
                 return redirect('home')
     else:
         form = AuthenticationForm()
+        
     return render(request, 'login.html', {'form': form})
 
 def cadastro_view(request):

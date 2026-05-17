@@ -5,13 +5,15 @@ from django.contrib.auth.models import User
 class Perfil(models.Model):
     TIPO_PESSOA_CHOICES = [('PF', 'Pessoa Física'), ('PJ', 'Pessoa Jurídica')]
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    foto = models.ImageField(upload_to='perfil_fotos/', null=True, blank=True)
     tipo_pessoa = models.CharField(max_length=2, choices=TIPO_PESSOA_CHOICES, default='PF')
     documento = models.CharField(max_length=18, unique=True, verbose_name="CPF/CNPJ")
+    telefone = models.CharField(max_length=20, null=True, blank=True)
     cep = models.CharField(max_length=9, verbose_name="CEP")
     endereco = models.CharField(max_length=255, verbose_name="Rua", blank=True, null=True)
     cidade = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
     estado = models.CharField(max_length=2, verbose_name="Estado", blank=True, null=True)
-
+    
     class Meta:
         verbose_name = "Perfil de Usuário"
         verbose_name_plural = "Perfis de Usuários"
@@ -41,8 +43,20 @@ class Loja(models.Model):
         return self.nome_da_loja
 
 class Produto(models.Model):
+    CATEGORIA_CHOICES = [
+        ('smartphones', 'Smartphones'),
+        ('notebooks', 'Notebooks'),
+        ('acessorios', 'Acessórios'),
+        ('outros', 'Outros'),
+    ]
+    
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE, related_name='produtos')
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    categoria = models.CharField(
+    max_length=50, 
+    choices=CATEGORIA_CHOICES, 
+    null=True, 
+    blank=True
+)
     nome = models.CharField(max_length=200)
     descricao = models.TextField()
     preco = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Preço de Venda")

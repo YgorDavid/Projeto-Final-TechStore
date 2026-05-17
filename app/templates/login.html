@@ -1,39 +1,50 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow">
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0"
+            style="background-color: #1a1f26; color: #ffffff; border: 1px solid #00d4ff !important; border-radius: 15px;">
 
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Acesso ao Cliente | TechStore</h4>
+            <div class="card-header text-center py-4 border-0"
+                style="background-color: rgba(0, 212, 255, 0.05); border-radius: 15px 15px 0 0;">
+                <h4 class="mb-0 fw-bold" style="color: #00d4ff;">Acesso ao Cliente | TechStore</h4>
             </div>
 
-            <div class="card-body">
-
-                {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-danger" role="alert">
-                    {{ message }}
-                </div>
-                {% endfor %}
-                {% endif %}
-
-                <!-- AJUSTE: Adicionamos a URL correta no action -->
+            <div class="card-body p-4 p-lg-5">
                 <form action="{% url 'login' %}" method="POST">
-
                     {% csrf_token %}
 
-                    <!-- Renderiza os campos de Usuário e Senha -->
-                    {{ form.as_p }}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label small fw-bold text-secondary">USUÁRIO</label>
+                        <input type="text" name="username" class="form-control border-0 text-white" id="id_username"
+                            placeholder="Digite seu usuário" required
+                            style="background-color: #21262d; height: 45px; border-radius: 8px;">
+                    </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Entrar na TechStore</button>
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label small fw-bold text-secondary">SENHA</label>
+                        <input type="password" name="password" class="form-control border-0 text-white" id="id_password"
+                            placeholder="Digite sua senha" required
+                            style="background-color: #21262d; height: 45px; border-radius: 8px;">
+                    </div>
 
+                    <button type="submit" class="btn fw-bold w-100 py-2 shadow-sm"
+                        style="background-color: #00d4ff; color: #000; border: none; border-radius: 8px; height: 48px;">
+                        ENTRAR NA TECHSTORE
+                    </button>
                 </form>
 
-                <br>
-                <p class="text-center">Não possui conta? <a href="{% url 'cadastro' %}">Cadastre-se agora!</a></p>
-                <p class="text-center">Dificuldades no acesso? Entre em contato com o nosso suporte.</p>
+                <div class="mt-4 pt-3 border-top border-secondary text-center">
+                    <p class="mb-1 text-white">Não possui conta?
+                        <a href="{% url 'cadastro' %}" class="fw-bold text-decoration-none"
+                            style="color: #00d4ff;">Cadastre-se agora!</a>
+                    </p>
+                    <p class="small text-secondary mt-2">
+                        Dificuldades no acesso? <br>
+                        <span style="color: #8b949e;">Entre em contato com o nosso suporte.</span>
+                    </p>
+                </div>
 
             </div>
         </div>
