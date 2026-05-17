@@ -2,12 +2,12 @@
 
 {% block content %}
 {% if user.is_staff %}
-        <div style="background: #1a1a1a; border-bottom: 2px solid #198754; padding: 10px; text-align: center;">
-            <a href="{% url 'dashboard_bi' %}" style="color: #198754; text-decoration: none; font-weight: bold;">
-                🛡️ ACESSAR DASHBOARD DE VENDAS (BI)
-            </a>
-        </div>
-    {% endif %}
+<div style="background: #1a1a1a; border-bottom: 2px solid #198754; padding: 10px; text-align: center;">
+    <a href="{% url 'dashboard_bi' %}" style="color: #198754; text-decoration: none; font-weight: bold;">
+        🛡️ ACESSAR DASHBOARD DE VENDAS (BI)
+    </a>
+</div>
+{% endif %}
 
 <section class="hero">
     <div class="container hero-content">
@@ -96,7 +96,8 @@
                                             {{ avaliacao.usuario.username|slice:":1"|upper }}
                                         </div>
                                         <div class="text-start">
-                                            <h6 class="mb-0 fw-bold" style="color: #00d4ff;">{{ avaliacao.usuario.username }}</h6>
+                                            <h6 class="mb-0 fw-bold" style="color: #00d4ff;">{{
+                                                avaliacao.usuario.username }}</h6>
                                             <small>{{ avaliacao.data_postagem|date:"d/m/Y" }}</small>
                                         </div>
                                     </div>
@@ -110,7 +111,7 @@
         {% endif %}
         {% empty %}
         <div class="text-center py-5">
-            <p class="text-muted fs-5">Ainda não temos avaliações 5 estrelas para exibir.</p>
+            <p>Ainda não temos avaliações 5 estrelas para exibir.</p>
         </div>
         {% endfor %}
 
@@ -188,9 +189,10 @@
 
             <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
                 <div class="accordion-body">
-                    Entregamos para todo o Brasil com uma logística rápida e eficiente! O prazo e o valor do frete
-                    variam de acordo com o seu CEP e podem ser simulados diretamente no carrinho de compras antes de
-                    finalizar o pedido.
+                    Entregamos para todo o Brasil com uma logística rápida e eficiente! O frete é grátis para todo o
+                    Brasil! Já o prazo de entrega
+                    varia de acordo com o seu CEP, e será informado no resumo do pedido, antes de
+                    finalizá-lo.
                 </div>
             </div>
         </div>
@@ -224,8 +226,10 @@
             <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFAQ">
                 <div class="accordion-body">
                     Nosso grande diferencial é ter uma equipe técnica que entende de hardware de verdade. Você pode
-                    acionar nosso suporte técnico pelo chat online na sua área de atendimento ou pelo telefone <strong>(21)
-                        91234-5678</strong>, de segunda a sábado, das 8h às 20h, e domingos e feriados, das 9h às 18h. Estamos aqui para ajudar você a tirar o máximo proveito dos seus produtos!
+                    acionar nosso suporte técnico pelo chat online na sua área de atendimento ou pelo telefone
+                    <strong>(21)
+                        91234-5678</strong>, de segunda a sábado, das 8h às 20h, e domingos e feriados, das 9h às 18h.
+                    Estamos aqui para ajudar você a tirar o máximo proveito dos seus produtos!
                 </div>
             </div>
         </div>
