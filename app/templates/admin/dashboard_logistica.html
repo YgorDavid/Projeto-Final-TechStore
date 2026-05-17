@@ -1,0 +1,26 @@
+{% extends 'admin/base_bi.html' %}
+
+{% block modulo_nome %}Logística{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-danger text-white p-4" style="border-radius: 15px;">
+            <h6 class="text-danger small text-uppercase fw-bold">Capital Imobilizado</h6>
+            <h2 style="color: #ff7b72;">R$ {{ capital_total|floatformat:2 }}</h2>
+            <p class="mb-0 small text-white-50">Total investido em estoque parado.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4 text-center">
+        <div class="card bg-dark border-secondary p-4" style="border-radius: 15px;">
+            <h5 class="text-start mb-4" style="color: #ff7b72;">📦 Saúde do Estoque por Filial</h5>
+            {% if grafico_estoque %}
+                <img src="data:image/png;base64,{{ grafico_estoque }}" class="img-fluid rounded shadow">
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
