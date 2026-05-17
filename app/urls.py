@@ -17,6 +17,7 @@ urlpatterns = [
     path('favoritos/', views.lista_favoritos, name='favoritos'),
     path('favoritos/alternar/<int:produto_id>/', views.alternar_favorito, name='alternar_favorito'),
     path('favoritar/<int:produto_id>/',views.favoritar_produto,name='favoritar_produto'),
+    path('favorito/toggle/<int:produto_id>/', views.toggle_favorito, name='toggle_favorito'),
     # Rota do Business Intelligence - Acesso Restrito
     path('dashboard-bi/', views.dashboard_bi_view, name='dashboard_bi'),
     path('bi/logistica/', views.dashboard_logistica_view, name='dashboard_logistica'),

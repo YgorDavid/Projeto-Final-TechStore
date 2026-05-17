@@ -98,21 +98,30 @@
                 {% endif %}
 
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="mb-3">
                         <span class="badge px-2 py-1"
-                            style="background-color: rgba(0, 212, 255, 0.1); color: #00d4ff; border-radius: 5px;">
+                            style="background-color: #00d4ff; color: #161b22; border-radius: 5px;">
                             {{ produto.get_categoria_display|default:"Geral" }}
                         </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title text-white fw-bold m-0">{{ produto.nome }}</h5>
 
                         <div class="wrapper-coracao">
-                            <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none">
+                            {% if produto.id in favoritos_ids %}
+                            <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none"
+                                checked onchange="toggleFavorito({{ produto.id }})">
+                            {% else %}
+                            <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none"
+                                onchange="toggleFavorito({{ produto.id }})">
+                            {% endif %}
                             <label for="fav-{{ produto.id }}" class="btn-card-favorito">
                                 <i class="bi bi-heart"></i>
                             </label>
                         </div>
                     </div>
 
-                    <h5 class="card-title text-white fw-bold">{{ produto.nome }}</h5>
                     <p class="card-text text-secondary small mb-3">{{ produto.descricao|truncatechars:70 }}</p>
 
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -192,7 +201,7 @@
             style="background-color: #2b2d33; border: 1px solid #383a40; border-radius: 15px;">
             <div class="modal-header border-bottom border-secondary border-opacity-25">
                 <h5 class="modal-title fw-bold text-white" id="modalAvaliacaoLabel"><i class="bi bi-star-fill me-2"
-                        style="color: #ffd43b;"></i>Enviar Avaliação</h5>
+                        style="color: #00d4ff;"></i>Enviar Avaliação</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -205,7 +214,7 @@
                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal"
                         style="border-radius: 8px;">Cancelar</button>
                     <button type="submit" name="submit_avaliacao" class="btn fw-bold"
-                        style="background-color: #ffd43b; color: black; border-radius: 8px;">Postar Avaliação</button>
+                        style="background-color: #00d4ff; color: #161b22; border-radius: 8px;">Postar Avaliação</button>
                 </div>
             </form>
         </div>
@@ -228,7 +237,6 @@
 </script>
 
 <style>
-    /* Estilos do Coração */
     .wrapper-coracao {
         display: inline-block;
     }
@@ -248,22 +256,21 @@
     }
 
     .btn-card-favorito:hover {
-        color: #ff4b4b;
-        border-color: #ff4b4b;
-        background-color: rgba(255, 75, 75, 0.05);
+        color: #00d4ff;
+        border-color: #00d4ff;
+        background-color: rgba(0, 212, 255, 0.05);
     }
 
     .check-coracao-escondido:checked+.btn-card-favorito {
-        color: #ff4b4b;
-        background-color: rgba(255, 75, 75, 0.1);
-        border-color: #ff4b4b;
+        color: #00d4ff;
+        background-color: rgba(0, 212, 255, 0.1);
+        border-color: #00d4ff;
     }
 
     .check-coracao-escondido:checked+.btn-card-favorito i::before {
         content: "\f415";
     }
 
-    /* Estilos de Categorias e Limpar */
     .category-btn {
         background-color: #1f2124;
         color: #a0a5b0;
@@ -290,8 +297,8 @@
 
     .btn-limpar {
         background-color: transparent !important;
-        color: #fa5252 !important;
-        border: 1px solid #fa5252 !important;
+        color: #00d4ff !important;
+        border: 1px solid #00d4ff !important;
         border-radius: 6px;
         font-size: 0.85rem;
         font-weight: 500;
@@ -299,8 +306,8 @@
     }
 
     .btn-limpar:hover {
-        background-color: #fa5252 !important;
-        color: white !important;
+        background-color: #00d4ff !important;
+        color: #161b22 !important;
     }
 
     .labels-white p {
@@ -324,5 +331,46 @@
         margin-top: 4px;
     }
 </style>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function toggleFavorito(produtoId) {
+        const csrftoken = getCookie('csrftoken');
+
+        fetch(`/favorito/toggle/${produtoId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'adicionado') {
+                    console.log('Produto saved to favorites!');
+                } else {
+                    console.log('Produto removed from favorites!');
+                }
+            })
+            .catch(error => {
+                console.error('Connection error:', error);
+                document.getElementById(`fav-${produtoId}`).checked = !document.getElementById(`fav-${produtoId}`).checked;
+            });
+    }
+</script>
 
 {% endblock %}

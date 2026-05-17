@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from .forms import CadastroForm, AvaliacaoForm, UserUpdateForm, PerfilUpdateForm, ProdutoForm
 from .models import *
 from .carrinho import Carrinho
@@ -98,11 +99,14 @@ def produtos_view(request):
             pass
 
     categorias_choices = getattr(Produto, 'CATEGORIA_CHOICES', [])
-    favoritos_ids = list(Favorito.objects.filter(usuario=request.user).values_list('produto_id', flat=True))
-
+    favoritos_ids = []
+    if request.user.is_authenticated:
+        favoritos_ids = list(Favorito.objects.filter(usuario=request.user).values_list('produto_id', flat=True))
+    
     context = {
         'usuario': request.user.username,
         'produtos': produtos,
+        'favoritos_ids': favoritos_ids,
         'categorias_choices': categorias_choices,
         'categoria_selecionada': categoria_selecionada,
         'form_produto': form_produto,
@@ -280,6 +284,19 @@ def avaliar_produto(request, produto_id):
             avaliacao.save()
             return redirect('detalhe_produto', produto_id=produto.id)
     return redirect('detalhe_produto', produto_id=produto.id)
+
+@login_required
+@require_POST
+def toggle_favorito(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    
+    favorito, created = Favorito.objects.get_or_create(usuario=request.user, produto=produto)
+    
+    if not created:
+        favorito.delete()
+        return JsonResponse({'status': 'removido'})
+    
+    return JsonResponse({'status': 'adicionado'})
 
 def login_view(request):
     if request.method == 'POST':

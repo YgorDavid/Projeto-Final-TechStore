@@ -2,44 +2,54 @@
 
 {% block content %}
 <div class="container mt-4 mb-5">
-    <h3 class="text-white fw-bold mb-4"><i class="bi bi-heart-fill me-2" style="color: #00d4ff;"></i>MEUS FAVORITOS
-        <br><br>
-        <p class="text-white-50 fs-6 fw-normal">Veja os produtos que você marcou como favoritos.</p>
-    </h3><br>
+    <div class="mb-4">
+        <h3 class="text-white fw-bold m-0">
+            <i class="bi bi-heart-fill me-2" style="color: #00d4ff;"></i>MEUS FAVORITOS
+        </h3>
+        <p class="text-secondary small mt-1 mb-0">Veja os produtos que você marcou como favoritos.</p>
+    </div>
+
     {% if favoritos %}
-    <div class="row g-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for favorito in favoritos %}
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-lg"
-                style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333;">
-                <img src="{{ favorito.produto.imagem.url }}" class="card-img-top" alt="{{ favorito.produto.nome }}"
-                    style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title"
-                        style="color: #00d4ff; font-weight: bold; letter-spacing: 1px; font-size: 1.1rem;">
-                        {{ favorito.produto.nome }}</h5>
-                    <p class="card-text text-white-50 mb-4" style="font-size: 0.9rem;">{{
-                        favorito.produto.descricao|truncatechars:100 }}</p>
-                    <div class="mt-auto">
-                        <span class="fw-bold text-white" style="font-size: 1.1rem;">R$ {{ favorito.produto.preco
-                            }}</span>
-                        <a href="{% url 'detalhe_produto' favorito.produto.id %}" class="btn btn-sm ms-3"
-                            style="background-color: #00d4ff; color: black; border-radius: 8px; font-size: 0.9rem;">
-                            Ver Detalhes
-                        </a>
+        <div class="col">
+            <div class="card h-100 border-0"
+                style="background-color: #1a1d21; border-radius: 20px; border: 1px solid #333 !important;">
+
+                {% if favorito.produto.imagem %}
+                <img src="{{ favorito.produto.imagem.url }}" class="card-img-top p-3 pb-0"
+                    alt="{{ favorito.produto.nome }}" style="height: 200px; object-fit: contain; border-radius: 25px;">
+                {% endif %}
+
+                <div class="card-body d-flex flex-column text-center">
+                    <h5 class="card-title text-white fw-bold mb-2">{{ favorito.produto.nome }}</h5>
+
+                    <p class="card-text text-secondary small mb-3">
+                        {{ favorito.produto.descricao|truncatechars:70 }}
+                    </p>
+
+                    <div class="mb-3 mt-auto">
+                        <span class="h4 fw-bold" style="color: #00d4ff;">R$ {{ favorito.produto.preco }}</span>
                     </div>
                 </div>
+
+                <a href="{% url 'detalhe_produto' favorito.produto.id %}" class="btn fw-bold w-100 mt-auto"
+                    style="background-color: #00d4ff; color: black; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-eye-fill me-2"></i>VER DETALHES
+                </a>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-5" style="background-color: #21262d; border-radius: 15px; border: 1px solid #333;">
-        <i class="bi bi-heartbreak-fill mb-3" style="color: #00d4ff; font-size: 3rem;"></i>
+    <div class="text-center py-5 w-100"
+        style="background-color: #2b2d33; border-radius: 15px; border: 1px solid #383a40;">
+        <i class="bi bi-heartbreak-fill mb-3" style="color: #00d4ff; font-size: 3.5rem;"></i>
         <h4 class="fw-bold text-white mb-2">Nenhum favorito encontrado</h4>
-        <p class="text-white " style=" font-size: 0.95rem; color: #6c757d; letter-spacing: 0.5px;">Parece que você ainda
-            não marcou nenhum
-            produto como favorito. Explore nossa loja e encontre seus itens preferidos!</p>
+        <p class="text-secondary mx-auto px-3" style="font-size: 0.95rem; max-width: 500px;">
+            Parece que você ainda não marcou nenhum produto como favorito. Explore nossa loja e encontre seus itens
+            preferidos!
+        </p>
         <a href="{% url 'produtos' %}" class="btn fw-bold px-4 mt-3 shadow"
             style="background-color: #00d4ff; color: black; border-radius: 10px; height: 45px; display: inline-flex; align-items: center;">
             <i class="bi bi-search me-2"></i> EXPLORAR PRODUTOS
@@ -47,5 +57,4 @@
     </div>
     {% endif %}
 </div>
-
 {% endblock %}
