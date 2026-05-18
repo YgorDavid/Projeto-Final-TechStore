@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row g-4 g-lg-5 align-items-start">
+
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="position-relative p-3"
+                style="background-color: #1a1d21; border-radius: 24px; border: 1px solid #2a2f35;">
+
+                <span class="badge position-absolute text-uppercase fw-bold"
+                    style="top: 25px; right: 25px; background-color: #00d4ff; color: #161b22; font-size: 0.75rem; letter-spacing: 0.5px; z-index: 2;">
+                    Smartphones
+                </span>
+
+                <div class="position-absolute" style="top: 25px; left: 25px; z-index: 2;">
+                    <div class="wrapper-coracao">
+                        {% if produto.id in favoritos_ids %}
+                        <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none" checked
+                            onchange="toggleFavorito({{ produto.id }})">
+                        <label for="fav-{{ produto.id }}" class="btn-card-favorito shadow">
+                            <i class="bi bi-heart-fill coracao-icon"></i>
+                        </label>
+                        {% else %}
+                        <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none"
+                            onchange="toggleFavorito({{ produto.id }})">
+                        <label for="fav-{{ produto.id }}" class="btn-card-favorito shadow">
+                            <i class="bi bi-heart coracao-icon"></i>
+                        </label>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center bg-white"
+                    style="height: 450px; border-radius: 16px; overflow: hidden;">
+                    {% if produto.imagem %}
+                    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="img-fluid p-4"
+                        style="max-height: 100%; object-fit: contain;">
+                    {% else %}
+                    <div class="text-dark py-5"><i class="bi bi-image fs-1"></i></div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 ps-md-4 d-flex flex-column">
+            <h1 class="text-white fw-bold mb-3 display-5" style="letter-spacing: -0.5px; line-height: 1.2;">
+                {{ produto.nome }}
+            </h1>
+
+            <div class="d-flex align-items-center mb-4 mt-2 w-100">
+                <h2 class="fw-bold m-0" style="color: #00d4ff; font-weight: 800; letter-spacing: -1px;">
+                    R$ {{ produto.preco }}
+                </h2>
+
+                {% if produto.estoque %}
+                <span class="text-white fw-semibold small d-flex align-items-center gap-2 ms-auto"
+                    style="font-size: 0.95rem; margin-top: 6px; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                    <i class="bi bi-box-seam" style="color: #00d4ff;"></i> {{ produto.estoque }} un. disponíveis
+                </span>
+                {% endif %}
+            </div>
+
+            <hr class="mb-4" style="border-color: #2a2f35; opacity: 1;">
+
+            <div class="mb-5 mt-2">
+                <h2 class="text-secondary text-uppercase fw-bold small mb-3"
+                    style="letter-spacing: 1.5px; color: #f8f9fa !important;">
+                    Descrição do Produto:
+                </h2>
+                <h3 style="font-size: 1.5rem; text-align: justify; white-space: pre-line; color: #6c757d;">
+                    {{ produto.descricao }}
+                </h3>
+            </div>
+
+            <div class="mt-4">
+                <form action="{% url 'carrinho_adicionar' produto.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="btn fw-bold w-100 py-3 text-uppercase shadow-lg transition-all btn-adicionar-carrinho"
+                        style="background-color: #00d4ff; color: black; border-radius: 14px; letter-spacing: 1.5px; font-size: 1rem; border: none; font-weight: 700;">
+                        <i class="bi bi-cart-plus-fill me-2 fs-5" style="vertical-align: -2px;"></i> Adicionar ao
+                        Carrinho
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .btn-adicionar-carrinho {
+        transition: all 0.25s ease-in-out;
+    }
+
+    .btn-adicionar-carrinho:hover {
+        background-color: #00b8dd !important;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 214, 255, 0.3) !important;
+    }
+
+    .btn-adicionar-carrinho:active {
+        transform: translateY(-1px);
+    }
+
+    .wrapper-coracao {
+        display: inline-block;
+    }
+
+    .btn-card-favorito {
+        background: #1f2124;
+        border: 1px solid #363a42;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        color: #8b949e;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-card-favorito:hover {
+        color: #00d4ff;
+        border-color: #00d4ff;
+        background-color: rgba(0, 212, 255, 0.05);
+    }
+
+    .check-coracao-escondido:checked+.btn-card-favorito {
+        color: #00d4ff;
+        background-color: rgba(0, 212, 255, 0.1);
+        border-color: #00d4ff;
+    }
+
+    .coracao-icon {
+        font-size: 1.2rem;
+    }
+</style>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function toggleFavorito(produtoId) {
+        const checkbox = document.getElementById(`fav-${produtoId}`);
+        const label = checkbox.nextElementSibling;
+        const icon = label.querySelector('.coracao-icon');
+        const csrftoken = getCookie('csrftoken');
+
+        if (checkbox.checked) {
+            icon.classList.remove('bi-heart');
+            icon.classList.add('bi-heart-fill');
+        } else {
+            icon.classList.remove('bi-heart-fill');
+            icon.classList.add('bi-heart');
+        }
+
+        fetch(`/favorito/toggle/${produtoId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'adicionado') {
+                    checkbox.checked = true;
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else if (data.status === 'removido') {
+                    checkbox.checked = false;
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            })
+            .catch(error => {
+                console.error('Erro na conexão:', error);
+                checkbox.checked = !checkbox.checked;
+                if (checkbox.checked) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            });
+    }
+</script>
+
+{% endblock %}

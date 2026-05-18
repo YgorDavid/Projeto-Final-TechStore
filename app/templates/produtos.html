@@ -97,25 +97,34 @@
                     style="height: 200px; object-fit: contain; border-radius: 25px;">
                 {% endif %}
 
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="card-body d-flex flex-column pb-2">
+                    <div class="mb-3">
                         <span class="badge px-2 py-1"
-                            style="background-color: rgba(0, 212, 255, 0.1); color: #00d4ff; border-radius: 5px;">
+                            style="background-color: #00d4ff; color: #161b22; border-radius: 5px;">
                             {{ produto.get_categoria_display|default:"Geral" }}
                         </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title text-white fw-bold m-0">{{ produto.nome }}</h5>
 
                         <div class="wrapper-coracao">
-                            <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none">
+                            {% if produto.id in favoritos_ids %}
+                            <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none"
+                                checked onchange="toggleFavorito({{ produto.id }})">
+                            {% else %}
+                            <input type="checkbox" id="fav-{{ produto.id }}" class="check-coracao-escondido d-none"
+                                onchange="toggleFavorito({{ produto.id }})">
+                            {% endif %}
                             <label for="fav-{{ produto.id }}" class="btn-card-favorito">
                                 <i class="bi bi-heart"></i>
                             </label>
                         </div>
                     </div>
 
-                    <h5 class="card-title text-white fw-bold">{{ produto.nome }}</h5>
                     <p class="card-text text-secondary small mb-3">{{ produto.descricao|truncatechars:70 }}</p>
 
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2 mt-auto">
                         <span class="h4 mb-0 fw-bold" style="color: #00d4ff;">R$ {{ produto.preco }}</span>
 
                         <div
@@ -141,12 +150,28 @@
                     {% endif %}
                 </div>
 
-                {% if produto.estoque > 0 %}
-                <a href="{% url 'carrinho_adicionar' produto.id %}" class="btn fw-bold w-100 mt-auto"
-                    style="background-color: #00d4ff; color: black; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center;">
-                    <i class="bi bi-cart-plus-fill me-2"></i>ADICIONAR AO CARRINHO
-                </a>
-                {% endif %}
+                <div class="p-3 pt-0 d-flex flex-column gap-2 mt-auto">
+                    <a href="{% url 'detalhe_produto' produto.id %}"
+                        class="btn fw-bold w-100 transition-all btn-detalhes"
+                        style="background-color: transparent; color: #00d4ff; border: 1px solid #00d4ff; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                        <i class="bi bi-eye-fill me-2"></i>VER DETALHES
+                    </a>
+
+                    {% if produto.estoque > 0 %}
+                    <a href="{% url 'carrinho_adicionar' produto.id %}"
+                        class="btn fw-bold w-100 transition-all btn-add-card"
+                        style="background-color: #00d4ff; color: black; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                        <i class="bi bi-cart-plus-fill me-2"></i>ADICIONAR AO CARRINHO
+                    </a>
+                    {% else %}
+                    <button class="btn w-100 d-flex align-items-center justify-content-center border-0 fw-bold"
+                        style="background-color: #282a2e; color: #6c757d; border-radius: 10px; font-size: 0.85rem; height: 40px; cursor: not-allowed;"
+                        disabled>
+                        <i class="bi bi-x-circle me-2"></i>ESGOTADO
+                    </button>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
         {% endfor %}
@@ -192,7 +217,7 @@
             style="background-color: #2b2d33; border: 1px solid #383a40; border-radius: 15px;">
             <div class="modal-header border-bottom border-secondary border-opacity-25">
                 <h5 class="modal-title fw-bold text-white" id="modalAvaliacaoLabel"><i class="bi bi-star-fill me-2"
-                        style="color: #ffd43b;"></i>Enviar Avaliação</h5>
+                        style="color: #00d4ff;"></i>Enviar Avaliação</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
@@ -205,7 +230,7 @@
                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal"
                         style="border-radius: 8px;">Cancelar</button>
                     <button type="submit" name="submit_avaliacao" class="btn fw-bold"
-                        style="background-color: #ffd43b; color: black; border-radius: 8px;">Postar Avaliação</button>
+                        style="background-color: #00d4ff; color: #161b22; border-radius: 8px;">Postar Avaliação</button>
                 </div>
             </form>
         </div>
@@ -225,10 +250,38 @@
         document.getElementById('id_categoria').value = val;
         document.getElementById('filterForm').submit();
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            return toast;
+        });
+    });
 </script>
 
 <style>
-    /* Estilos do Coração */
+    /* Transições e Efeitos de Hover Premium dos Botões */
+    .transition-all {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-detalhes:hover {
+        background-color: rgba(0, 212, 255, 0.1) !important;
+        color: #00e5ff !important;
+        border-color: #00e5ff !important;
+        transform: translateY(-2px);
+    }
+
+    .btn-add-card:hover {
+        background-color: #00b8dd !important;
+        color: black !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+    }
+
+    /* Restante dos seus Estilos */
     .wrapper-coracao {
         display: inline-block;
     }
@@ -248,22 +301,21 @@
     }
 
     .btn-card-favorito:hover {
-        color: #ff4b4b;
-        border-color: #ff4b4b;
-        background-color: rgba(255, 75, 75, 0.05);
+        color: #00d4ff;
+        border-color: #00d4ff;
+        background-color: rgba(0, 212, 255, 0.05);
     }
 
     .check-coracao-escondido:checked+.btn-card-favorito {
-        color: #ff4b4b;
-        background-color: rgba(255, 75, 75, 0.1);
-        border-color: #ff4b4b;
+        color: #00d4ff;
+        background-color: rgba(0, 212, 255, 0.1);
+        border-color: #00d4ff;
     }
 
     .check-coracao-escondido:checked+.btn-card-favorito i::before {
         content: "\f415";
     }
 
-    /* Estilos de Categorias e Limpar */
     .category-btn {
         background-color: #1f2124;
         color: #a0a5b0;
@@ -290,8 +342,8 @@
 
     .btn-limpar {
         background-color: transparent !important;
-        color: #fa5252 !important;
-        border: 1px solid #fa5252 !important;
+        color: #00d4ff !important;
+        border: 1px solid #00d4ff !important;
         border-radius: 6px;
         font-size: 0.85rem;
         font-weight: 500;
@@ -299,8 +351,8 @@
     }
 
     .btn-limpar:hover {
-        background-color: #fa5252 !important;
-        color: white !important;
+        background-color: #00d4ff !important;
+        color: #161b22 !important;
     }
 
     .labels-white p {
@@ -324,5 +376,68 @@
         margin-top: 4px;
     }
 </style>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function toggleFavorito(produtoId) {
+        const csrftoken = getCookie('csrftoken');
+
+        fetch(`/favorito/toggle/${produtoId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'adicionado') {
+                    console.log('Produto saved to favorites!');
+                } else {
+                    console.log('Produto removed from favorites!');
+                }
+            })
+            .catch(error => {
+                console.error('Connection error:', error);
+                document.getElementById(`fav-${produtoId}`).checked = !document.getElementById(`fav-${produtoId}`).checked;
+            });
+    }
+</script>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast align-items-center text-white {% if message.tags == 'error' %}bg-danger{% else %}bg-success{% endif %} border-0 shadow"
+        role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+        <div class="d-flex">
+            <div class="toast-body fw-bold">
+                {% if message.tags == 'error' %}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {% else %}
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
 
 {% endblock %}

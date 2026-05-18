@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib import messages
 from django.db.models import Q
+from django.db import IntegrityError
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from .forms import CadastroForm, AvaliacaoForm, UserUpdateForm, PerfilUpdateForm, ProdutoForm
 from .models import *
 from .carrinho import Carrinho
@@ -67,8 +69,13 @@ def produtos_view(request):
             if form_avaliacao.is_valid():
                 avaliacao = form_avaliacao.save(commit=False)
                 avaliacao.usuario = request.user
-                avaliacao.save()
-                messages.success(request, "Avaliação enviada com sucesso!")
+                
+                try:
+                    avaliacao.save()
+                    messages.success(request, "Avaliação enviada com sucesso!")
+                except IntegrityError:
+                    messages.error(request, "Você já avaliou este produto anteriormente.")
+                
                 return redirect('produtos')
             else:
                 messages.error(request, "Erro ao enviar avaliação. Verifique os campos.")
@@ -98,11 +105,14 @@ def produtos_view(request):
             pass
 
     categorias_choices = getattr(Produto, 'CATEGORIA_CHOICES', [])
-    favoritos_ids = list(Favorito.objects.filter(usuario=request.user).values_list('produto_id', flat=True))
-
+    favoritos_ids = []
+    if request.user.is_authenticated:
+        favoritos_ids = list(Favorito.objects.filter(usuario=request.user).values_list('produto_id', flat=True))
+    
     context = {
         'usuario': request.user.username,
         'produtos': produtos,
+        'favoritos_ids': favoritos_ids,
         'categorias_choices': categorias_choices,
         'categoria_selecionada': categoria_selecionada,
         'form_produto': form_produto,
@@ -113,8 +123,36 @@ def produtos_view(request):
     return render(request, 'produtos.html', context)
 
 def detalhe_produto(request, produto_id):
-    produto = get_object_or_404(Produto, id=produto_id)
-    return render(request, 'detalhe_produto.html', {'produto': produto})
+    produto = get_object_or_404(Produto, id=produto_id) 
+    
+    favoritos_ids = []
+    if request.user.is_authenticated:
+        favoritos_ids = list(Favorito.objects.filter(usuario=request.user).values_list('produto_id', flat=True))
+    
+    context = {
+        'produto': produto,
+        'favoritos_ids': favoritos_ids,
+    }
+    return render(request, 'detalhe_produto.html', context)
+
+@login_required
+def meus_pedidos(request):
+    pedidos_usuario = Pedido.objects.filter(comprador=request.user).prefetch_related('itens__produto').order_by('-data_pedido')
+    
+    context = {
+        'pedidos': pedidos_usuario
+    }
+    
+    return render(request, 'meus_pedidos.html', context)
+
+@login_required
+def detalhes_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id, comprador=request.user)
+    
+    context = {
+        'pedido': pedido
+    }
+    return render(request, 'detalhes_pedido.html', context)
 
 @login_required
 def favoritar_produto(request, produto_id):
@@ -146,6 +184,19 @@ def alternar_favorito(request, produto_id):
         favoritado = True
 
     return JsonResponse({'status': 'success', 'favoritado': favoritado})
+
+@login_required
+@require_POST
+def toggle_favorito(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    
+    favorito, created = Favorito.objects.get_or_create(usuario=request.user, produto=produto)
+    
+    if not created:
+        favorito.delete()
+        return JsonResponse({'status': 'removido'})
+    
+    return JsonResponse({'status': 'adicionado'})
 
 def detalhe_carrinho(request):
     carrinho = Carrinho(request)
@@ -216,12 +267,24 @@ def finalizar_compra(request):
         )
 
         for item in carrinho:
+            produto = item['produto']
+            quantidade_comprada = item['quantidade']
+
+            if produto.estoque < quantidade_comprada:
+                messages.error(request, f'Desculpe, o produto "{produto.nome}" só possui {produto.estoque} unidades disponíveis.')
+                pedido.delete()
+                return redirect('detalhe_carrinho')
+
             ItemPedido.objects.create(
                 pedido=pedido,
-                produto=item['produto'],
+                produto=produto,
                 preco=item['preco'],
-                quantidade=item['quantidade']
+                quantidade=quantidade_comprada
             )
+
+            produto.estoque -= quantidade_comprada
+            produto.save()
+
 
         carrinho.limpar()  
         messages.success(request, f'Pedido #{pedido.id} realizado com sucesso!')
