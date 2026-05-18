@@ -200,6 +200,14 @@ svg {
     color: var(--color-primary);
 }
 
+.navbar-nav .btn-outline-info:hover,
+.navbar-nav .btn-outline-info:focus,
+.navbar-nav .btn-outline-info:active {
+    background-color: #00d4ff !important;
+    color: #000000 !important;
+    border-color: #00d4ff !important;
+}
+
 /* Search bar (centered on desktop) */
 @media (min-width: 992px) {
     .search-center {

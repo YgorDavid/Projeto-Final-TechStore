@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5" style="min-height: 60vh;">
+
+    <div class="text-center mb-5">
+        <h3 class="text-white fw-bold mb-2">
+            <i class="bi bi-bag-check-fill me-2" style="color: #00d4ff;"></i>MEUS PEDIDOS
+        </h3>
+        <p class="text-white-50 fs-6 fw-normal mb-0" style="font-family: sans-serif;">
+            Acompanhe o histórico de suas compras.
+        </p>
+    </div>
+
+    {% if pedidos %}
+    <div class="row g-4">
+        {% for pedido in pedidos %}
+        <div class="col-12">
+            <div class="card shadow-lg border-0"
+                style="background-color: #1a1d21; border-radius: 12px; border: 1px solid #30363d !important;">
+
+                <div class="card-header d-flex justify-content-between align-items-center py-3 flex-wrap gap-2"
+                    style="background-color: #21262d; border-bottom: 1px solid #30363d; border-radius: 12px 12px 0 0;">
+                    <div>
+                        <span class="text-white-50 small me-3 fw-bold">PEDIDO #{{ pedido.id }}</span>
+                        <span class="text-white small">
+                            <i class="bi bi-calendar3 me-1"></i> {{ pedido.data_pedido|date:"d/m/Y H:i" }}
+                        </span>
+                    </div>
+                    <div>
+                        {% if pedido.status == 'pago' or pedido.status == 'enviado' %}
+                        <span class="badge px-3 py-2"
+                            style="background-color: rgba(63, 185, 80, 0.1); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); border-radius: 6px;">
+                            <i class="bi bi-check-circle me-1"></i> {{ pedido.get_status_display }}
+                        </span>
+                        {% elif pedido.status == 'pendente' %}
+                        <span class="badge px-3 py-2 text-dark" style="background-color: #e3b341; border-radius: 6px;">
+                            <i class="bi bi-hourglass-split me-1"></i> {{ pedido.get_status_display }}
+                        </span>
+                        {% else %}
+                        <span class="badge px-3 py-2"
+                            style="background-color: rgba(255, 74, 74, 0.1); color: #ff4a4a; border: 1px solid rgba(255, 74, 74, 0.3); border-radius: 6px;">
+                            <i class="bi bi-x-circle me-1"></i> {{ pedido.get_status_display }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="row g-4 align-items-center">
+
+                        <div class="col-md-8">
+                            <h6 class="text-white-50 small mb-3 fw-bold" style="letter-spacing: 1px;">ITENS COMPRADOS
+                            </h6>
+
+                            {% for item in pedido.itens.all %}
+                            <div class="d-flex justify-content-between align-items-center mb-2 pb-2"
+                                style="border-bottom: 1px dashed #30363d;">
+                                <span class="text-white">
+                                    <i class="bi bi-box me-2" style="color: #00d4ff;"></i>
+                                    {{ item.produto.nome }}
+                                    <span class="text-secondary ms-1">x{{ item.quantidade }}</span>
+                                </span>
+                                <span class="text-white-50 small">Val. Unitário: R$ {{ item.preco }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-4 border-start-md" style="border-color: #30363d !important;">
+                            <h6 class="text-white-50 small mb-3 fw-bold" style="letter-spacing: 1px;">RESUMO DO PEDIDO
+                            </h6>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-white-50 small">Quantidade de itens:</span>
+                                <span class="text-white small">{{ pedido.itens.count }}</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-3 pt-3 mb-3"
+                                style="border-top: 1px solid #30363d;">
+                                <span class="text-white fw-bold text-uppercase">Total Pago:</span>
+                                <span class="fw-bold" style="color: #00d4ff; font-size: 1.2rem;">R$ {{ pedido.total }}</span>
+                            </div>
+
+                            <div class="mt-2">
+                                <a href="{% url 'detalhes_pedido' pedido.id %}" class="btn btn-detail w-100 fw-bold py-2"
+                                    style="background-color: #21262d; color: #00d4ff; border: 1px solid #00d4ff; border-radius: 6px; transition: all 0.2s ease-in-out; display: block; text-align: center; text-decoration: none; font-size: 0.9rem;">
+                                    <i class="bi bi-search me-1"></i> Detalhes do Pedido
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="text-center py-5 shadow-lg"
+        style="background-color: #1a1d21; border-radius: 15px; border: 1px solid #333; margin-top: 2rem;">
+        <i class="bi bi-cart-x" style="font-size: 4rem; color: #30363d;"></i>
+        <h4 class="text-white mt-4 fw-bold">Nenhum pedido encontrado</h4>
+        <p class="text-white-50 mb-4">Você ainda não realizou nenhuma compra na TechStore.</p>
+        <a href="{% url 'produtos' %}" class="btn fw-bold px-4 py-2"
+            style="background-color: #00d4ff; color: black; border-radius: 8px; transition: all 0.2s ease-in-out;">
+            COMEÇAR A COMPRAR
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+    @media (min-width: 768px) {
+        .border-start-md {
+            border-left: 1px solid #30363d !important;
+            padding-left: 1.5rem;
+        }
+    }
+
+    .btn-detail:hover {
+        background-color: #00d4ff !important;
+        color: #000000 !important;
+        box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+        transform: translateY(-1px);
+    }
+</style>
+
+{% endblock %}

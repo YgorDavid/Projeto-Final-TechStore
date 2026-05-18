@@ -97,7 +97,7 @@
                     style="height: 200px; object-fit: contain; border-radius: 25px;">
                 {% endif %}
 
-                <div class="card-body">
+                <div class="card-body d-flex flex-column pb-2">
                     <div class="mb-3">
                         <span class="badge px-2 py-1"
                             style="background-color: #00d4ff; color: #161b22; border-radius: 5px;">
@@ -124,7 +124,7 @@
 
                     <p class="card-text text-secondary small mb-3">{{ produto.descricao|truncatechars:70 }}</p>
 
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2 mt-auto">
                         <span class="h4 mb-0 fw-bold" style="color: #00d4ff;">R$ {{ produto.preco }}</span>
 
                         <div
@@ -150,12 +150,28 @@
                     {% endif %}
                 </div>
 
-                {% if produto.estoque > 0 %}
-                <a href="{% url 'carrinho_adicionar' produto.id %}" class="btn fw-bold w-100 mt-auto"
-                    style="background-color: #00d4ff; color: black; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center;">
-                    <i class="bi bi-cart-plus-fill me-2"></i>ADICIONAR AO CARRINHO
-                </a>
-                {% endif %}
+                <div class="p-3 pt-0 d-flex flex-column gap-2 mt-auto">
+                    <a href="{% url 'detalhe_produto' produto.id %}"
+                        class="btn fw-bold w-100 transition-all btn-detalhes"
+                        style="background-color: transparent; color: #00d4ff; border: 1px solid #00d4ff; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                        <i class="bi bi-eye-fill me-2"></i>VER DETALHES
+                    </a>
+
+                    {% if produto.estoque > 0 %}
+                    <a href="{% url 'carrinho_adicionar' produto.id %}"
+                        class="btn fw-bold w-100 transition-all btn-add-card"
+                        style="background-color: #00d4ff; color: black; border-radius: 10px; font-size: 0.85rem; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                        <i class="bi bi-cart-plus-fill me-2"></i>ADICIONAR AO CARRINHO
+                    </a>
+                    {% else %}
+                    <button class="btn w-100 d-flex align-items-center justify-content-center border-0 fw-bold"
+                        style="background-color: #282a2e; color: #6c757d; border-radius: 10px; font-size: 0.85rem; height: 40px; cursor: not-allowed;"
+                        disabled>
+                        <i class="bi bi-x-circle me-2"></i>ESGOTADO
+                    </button>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
         {% endfor %}
@@ -234,9 +250,38 @@
         document.getElementById('id_categoria').value = val;
         document.getElementById('filterForm').submit();
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            return toast;
+        });
+    });
 </script>
 
 <style>
+    /* Transições e Efeitos de Hover Premium dos Botões */
+    .transition-all {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-detalhes:hover {
+        background-color: rgba(0, 212, 255, 0.1) !important;
+        color: #00e5ff !important;
+        border-color: #00e5ff !important;
+        transform: translateY(-2px);
+    }
+
+    .btn-add-card:hover {
+        background-color: #00b8dd !important;
+        color: black !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+    }
+
+    /* Restante dos seus Estilos */
     .wrapper-coracao {
         display: inline-block;
     }
@@ -372,5 +417,27 @@
             });
     }
 </script>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast align-items-center text-white {% if message.tags == 'error' %}bg-danger{% else %}bg-success{% endif %} border-0 shadow"
+        role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+        <div class="d-flex">
+            <div class="toast-body fw-bold">
+                {% if message.tags == 'error' %}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {% else %}
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
 
 {% endblock %}

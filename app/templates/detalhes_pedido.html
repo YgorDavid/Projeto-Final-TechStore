@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5" style="min-height: 60vh; font-family: 'Segoe UI', system-ui, sans-serif;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="text-white fw-bold mb-0">
+                Pedido <span style="color: #00d4ff;">#{{ pedido.id }}</span>
+            </h2>
+        </div>
+        <a href="{% url 'meus_pedidos' %}" class="btn btn-custom-back fw-bold px-3 py-2 d-inline-flex align-items-center" 
+           style="background-color: #00d4ff; color: #000000; border: none; border-radius: 8px; transition: all 0.2s ease;">
+            <i class="bi bi-arrow-left me-2 fw-bold"></i>Voltar
+        </a>
+    </div>
+
+    <div class="card mb-4 border-0 shadow-lg" style="background-color: #1a1d21; border: 1px solid #30363d !important; border-radius: 12px;">
+        <div class="card-body p-4">
+            <div class="row text-center position-relative g-2">
+                <div class="position-absolute top-50 start-0 translate-middle-y w-100 d-none d-md-block" style="height: 2px; background-color: #30363d; z-index: 1;"></div>
+                
+                <div class="col-md-4 position-relative" style="z-index: 2;">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 shadow-sm" 
+                         style="width: 40px; height: 40px; background-color: {% if pedido.status == 'pendente' or pedido.status == 'pago' or pedido.status == 'enviado' %}#e3b341{% else %}#30363d{% endif %}; color: #000;">
+                        <i class="bi bi-wallet2 fw-bold"></i>
+                    </div>
+                    <p class="mb-0 small fw-bold text-white">Criado / Pendente</p>
+                </div>
+
+                <div class="col-md-4 position-relative" style="z-index: 2;">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 shadow-sm" 
+                         style="width: 40px; height: 40px; background-color: {% if pedido.status == 'pago' or pedido.status == 'enviado' %}#3fb950{% else %}#30363d{% endif %}; color: {% if pedido.status == 'pago' or pedido.status == 'enviado' %}#fff{% else %}#888{% endif %};">
+                        <i class="bi bi-check-lg fw-bold"></i>
+                    </div>
+                    <p class="mb-0 small fw-bold {% if pedido.status == 'pago' or pedido.status == 'enviado' %}text-white{% else %}text-white-50{% endif %}">Pagamento Aprovado</p>
+                </div>
+
+                <div class="col-md-4 position-relative" style="z-index: 2;">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 shadow-sm" 
+                         style="width: 40px; height: 40px; background-color: {% if pedido.status == 'enviado' %}#00d4ff{% else %}#30363d{% endif %}; color: {% if pedido.status == 'enviado' %}#000{% else %}#888{% endif %};">
+                        <i class="bi bi-truck fw-bold"></i>
+                    </div>
+                    <p class="mb-0 small fw-bold {% if pedido.status == 'enviado' %}text-white{% else %}text-white-50{% endif %}">Produto Enviado</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0" style="background-color: #1a1d21; border-radius: 12px; border: 1px solid #30363d !important;">
+                <div class="card-header py-3" style="background-color: #21262d; border-bottom: 1px solid #30363d; border-radius: 12px 12px 0 0;">
+                    <h6 class="text-white mb-0 fw-bold d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-box-seam me-2" style="color: #00d4ff;"></i> ITENS DO PEDIDO ({{ pedido.itens.count }})
+                    </h6>
+                </div>
+                
+                <div class="card-body p-0">
+                    {% for item in pedido.itens.all %}
+                    <div class="product-row d-flex align-items-center justify-content-between p-4 flex-wrap gap-3" 
+                         style="border-bottom: 1px solid #30363d; transition: background 0.2s ease;">
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="rounded p-2 me-3 d-flex justify-content-center align-items-center" 
+                                 style="width: 55px; height: 55px; background-color: #21262d; border: 1px solid #30363d;">
+                                <i class="bi bi-cpu text-white-50 fs-4 product-icon" style="transition: color 0.2s;"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">{{ item.produto.nome }}</h6>
+                                <span class="text-secondary small">Preço Unitário: R$ {{ item.preco }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-5">
+                            <div class="text-center" style="min-width: 60px;">
+                                <span class="text-white-50 small d-block mb-1">Qtd</span>
+                                <span class="text-white fw-bold" style="font-size: 1.05rem;">{{ item.quantidade }}x</span>
+                            </div>
+                            <div class="text-end" style="min-width: 100px;">
+                                <span class="text-white-50 small d-block mb-1">Subtotal</span>
+                                <span class="text-white fw-bold" style="font-size: 1.05rem;">R$ {{ item.preco }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-lg border-0" style="background-color: #1a1d21; border-radius: 12px; border: 1px solid #30363d !important;">
+                <div class="card-header py-3" style="background-color: #21262d; border-bottom: 1px solid #30363d; border-radius: 12px 12px 0 0;">
+                    <h6 class="text-white mb-0 fw-bold" style="letter-spacing: 0.5px;">RESUMO DO PAGAMENTO</h6>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <div class="d-flex justify-content-between mb-3 pb-3" style="border-bottom: 1px dashed #30363d;">
+                        <span class="text-white-50 small">Data da Compra:</span>
+                        <span class="text-white small fw-bold">{{ pedido.data_pedido|date:"d/m/Y \à\s H:i" }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3 pb-3" style="border-bottom: 1px dashed #30363d;">
+                        <span class="text-white-50 small">Método de Envio:</span>
+                        <span class="text-white small fw-bold"><i class="bi bi-lightning-charge-fill me-1" style="color: #e3b341;"></i> Entrega Full</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="text-white-50 small">Status do Pedido:</span>
+                        {% if pedido.status == 'pago' or pedido.status == 'enviado' %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="border-radius: 4px;">Aprovado</span>
+                        {% elif pedido.status == 'pendente' %}
+                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1" style="border-radius: 4px;">Aguardando</span>
+                        {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="border-radius: 4px;">Cancelado</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-3 rounded mb-2" style="background-color: #21262d; border: 1px solid #30363d;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-white fw-bold small text-uppercase">Total Pago</span>
+                            <span class="fw-bold" style="color: #00d4ff; font-size: 1.4rem; letter-spacing: -0.5px;">R$ {{ pedido.total }}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .product-row:hover {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+    }
+    .product-row:hover .product-icon {
+        color: #00d4ff !important;
+    }
+    
+    .btn-custom-back:hover {
+        background-color: #00bcd4 !important;
+        color: #000000 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+    }
+    
+    @media (max-width: 767.98px) {
+        .position-relative p {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
